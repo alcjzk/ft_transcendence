@@ -1,0 +1,51 @@
+from django.shortcuts import render, HttpResponse
+from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+import requests
+import os
+import binascii
+
+def home(request):
+    return render(request, 'home.html')
+
+
+
+def initiate_oauth(request):
+    state = binascii.hexlify(os.urandom(16)).decode()  # To prevent CSRF attacks
+    client_id = os.getenv("42_CLIENT_ID")
+    redirect_uri = "http://127.0.0.1"  # Adjust this to your callback URL
+    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&state={state}&redirect_uri={redirect_uri}"
+    return redirect(auth_url)
+
+
+
+def oauth_callback(request):
+    if request.method == 'GET':
+        code = request.GET.get('code')
+        state = request.GET.get('state')
+        client_id = os.getenv("42_CLIENT_ID")
+        client_secret = os.getenv("42_CLIENT_SECRET")  # Make sure to set this in your environment
+        redirect_uri = "http://127.0.0.1"  # Adjust this to your callback URL
+
+        # Exchange the authorization code for an access token
+        token_url = "https://api.intra.42.fr/oauth/token"
+        payload = {
+            'grant_type': 'authorization_code',
+            'code': code,
+            'redirect_uri': redirect_uri,
+            'client_id': client_id,
+            'client_secret': client_secret,
+        }
+        response = requests.post(token_url, data=payload)
+        if response.status_code == 200:
+            access_token = response.json().get('access_token')
+            # Now you can use the access token to make authenticated requests on behalf of the user
+            # Redirect the user to the desired page after successful login
+            return HttpResponseRedirect(reverse('home'))
+        else:
+            # Handle error
+            return HttpResponseRedirect(reverse('error'))
+    else:
+        # If the request is not a GET request, redirect to the home page
+        return HttpResponseRedirect(reverse('home'))
