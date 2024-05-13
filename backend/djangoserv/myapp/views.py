@@ -1,6 +1,6 @@
-from django.shortcuts import render, HttpResponse
-from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
+from dotenv import load_dotenv
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 import requests
 import os
@@ -12,10 +12,11 @@ def home(request):
 
 
 def initiate_oauth(request):
+    load_dotenv() # load .env to environment
     state = binascii.hexlify(os.urandom(16)).decode()  # To prevent CSRF attacks
     client_id = os.getenv("42_CLIENT_ID")
-    redirect_uri = "http://127.0.0.1"  # Adjust this to your callback URL
-    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&state={state}&redirect_uri={redirect_uri}"
+    redirect_uri = "http://127.0.0.1:8000/oauth_callback"  # Adjust this to your callback URL
+    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&state={state}&response_type=code"
     return redirect(auth_url)
 
 
@@ -49,3 +50,6 @@ def oauth_callback(request):
     else:
         # If the request is not a GET request, redirect to the home page
         return HttpResponseRedirect(reverse('home'))
+
+def error(request):
+    return HttpResponse("An error occurred.", status=400)
