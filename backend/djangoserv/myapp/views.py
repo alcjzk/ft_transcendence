@@ -67,11 +67,14 @@ def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
                     'full_name': user_data.get('usual_full_name'),
                 }
                 print(usr1)
-                return HttpResponseRedirect(reverse('home'))
+                return redirect('post_oauth')
             
         return HttpResponseRedirect(reverse('error'), status=401)
     else:
         return HttpResponseRedirect(reverse('home'))
+
+def post_oauth(request):
+    return render(request, 'post_oauth.html')
 
 def error(status: int) -> HttpResponse:
     if status == 400:

@@ -1,0 +1,42 @@
+<!-- post_oauth.html -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post OAuth</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            background: linear-gradient(to right, #add8e6, #90ee90); /* Light blue to light green gradient */
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User 1 ready</h1>
+    <h2>Choose an opponent</h2>
+    <a href="{% url 'initiate_oauth' %}" class="btn">Login With 42</a>
+    <a class="btn">Sign Up</a>
+</body>
+</html>
