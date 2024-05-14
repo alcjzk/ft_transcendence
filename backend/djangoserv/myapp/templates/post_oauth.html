@@ -1,0 +1,80 @@
+<!-- post_oauth.html -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post OAuth</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            background: linear-gradient(to right, #add8e6, #90ee90); /* Light blue to light green gradient */
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-bottom: 20px;
+        }
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        #userDropdown {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000; /* Ensure it's above other content */
+            display: none; /* Initially hidden */
+        }
+        #userSelect {
+            width: 100%;
+            padding: 5px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome, {{ request.session.user_login }}</h1>
+    <h2>Choose an opponent</h2>
+    <a id="chooseLink" class="btn">Choose from 42 {{ request.session.campus}}</a>
+    <div id="userDropdown">
+        <select id="userSelect">
+        </select>
+    </div>
+    <a class="btn">Opponent Sign Up</a>
+
+    <script>
+    document.getElementById('chooseLink').addEventListener('click', function() {
+        var dropdown = document.getElementById('userDropdown');
+        var select = document.getElementById('userSelect');
+        dropdown.style.display = 'block'; // Show the dropdown
+
+        // Clear the select element
+        select.innerHTML = '';
+
+        // Assuming request.session.users is an array of user objects
+        var users = {{ request.session.users|safe }};
+        users.forEach(function(user) {
+            var option = document.createElement('option');
+            option.value = user.login;
+            option.text = user.full_name + ' (' + user.login + ')';
+            select.appendChild(option);
+        });
+    });
+    </script>
+</body>
+</html>
