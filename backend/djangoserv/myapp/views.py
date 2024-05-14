@@ -16,9 +16,10 @@ def initiate_oauth(request: HttpRequest) -> HttpResponseRedirect:
     state = binascii.hexlify(os.urandom(16)).decode()  # To prevent CSRF attacks
     client_id = os.getenv("42_CLIENT_ID")
     redirect_uri = "http://127.0.0.1:8000/oauth_callback"  
-    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&state={state}&response_type=code"
-    request.session['oauth_state'] = state # Save state in session
+    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&state={state}&response_type=code"  
+    request.session['oauth_state'] = state 
     return redirect(auth_url)
+
 
 
 
@@ -38,6 +39,8 @@ def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
         if state != stored_state:
             return HttpResponseRedirect(reverse('error'), status=400)
         
+        del request.session['oauth_state']
+
         client_id = os.getenv("42_CLIENT_ID")
         client_secret = os.getenv("42_CLIENT_SECRET")  
         
@@ -67,6 +70,16 @@ def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
                     'full_name': user_data.get('usual_full_name'),
                 }
                 print(usr1)
+
+                request.session['user_login'] = usr1['login']
+                request.session['campus'] = user_data.get('campus')[0].get('name')
+
+                campus_id = user_data.get('campus')[0].get('id')
+                response = requests.get(url=f"https://api.intra.42.fr/v2/campus/{campus_id}/users", headers=headers)
+                data = response.json()
+                users = [{'id': data['id'], 'login': data['login'], 'full_name':data['usual_full_name']} for data in data]
+                
+                request.session['users'] = users
                 return redirect('post_oauth')
             
         return HttpResponseRedirect(reverse('error'), status=401)

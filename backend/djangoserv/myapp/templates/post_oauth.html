@@ -31,12 +31,50 @@
             font-size: 16px;
             margin: 10px;
         }
+        #userDropdown {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000; /* Ensure it's above other content */
+            display: none; /* Initially hidden */
+        }
+        #userSelect {
+            width: 100%;
+            padding: 5px;
+            border: none;
+        }
     </style>
 </head>
 <body>
-    <h1>User 1 ready</h1>
+    <h1>Welcome, {{ request.session.user_login }}</h1>
     <h2>Choose an opponent</h2>
-    <a href="{% url 'initiate_oauth' %}" class="btn">Login With 42</a>
-    <a class="btn">Sign Up</a>
+    <a id="chooseLink" class="btn">Choose from 42 {{ request.session.campus}}</a>
+    <div id="userDropdown">
+        <select id="userSelect">
+        </select>
+    </div>
+    <a class="btn">Opponent Sign Up</a>
+
+    <script>
+    document.getElementById('chooseLink').addEventListener('click', function() {
+        var dropdown = document.getElementById('userDropdown');
+        var select = document.getElementById('userSelect');
+        dropdown.style.display = 'block'; // Show the dropdown
+
+        // Clear the select element
+        select.innerHTML = '';
+
+        // Assuming request.session.users is an array of user objects
+        var users = {{ request.session.users|safe }};
+        users.forEach(function(user) {
+            var option = document.createElement('option');
+            option.value = user.login;
+            option.text = user.full_name + ' (' + user.login + ')';
+            select.appendChild(option);
+        });
+    });
+    </script>
 </body>
 </html>
