@@ -7,6 +7,6 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
-RUN [ "python", "manage.py", "migrate" ]
+ENV USE_POSTGRES="1"
 
-CMD [ "python", "manage.py", "runserver", "0.0.0.0:8010" ]
+ENTRYPOINT ["sh", "entrypoint.sh"]
