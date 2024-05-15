@@ -1,0 +1,18 @@
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    build: nginx
+    ports: ["80:80"]
+    restart: unless-stopped
+    networks: ["transcendence"]
+  django:
+    image: django
+    container_name: django
+    build: backend/djangoserv
+    restart: unless-stopped
+    networks: ["transcendence"]
+    env_file: .env
+
+networks:
+  transcendence:
