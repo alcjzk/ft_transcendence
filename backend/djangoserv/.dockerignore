@@ -1,0 +1,7 @@
+*.sqlite3
+**/.env
+__pycache__
+*.pyc
+.venv
+.gitignore
+Dockerfile
