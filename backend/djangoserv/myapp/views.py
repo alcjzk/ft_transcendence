@@ -6,17 +6,20 @@ import requests
 import os
 import binascii
 
+load_dotenv()
+
+CLIENT_ID = os.getenv('42_CLIENT_ID')
+REDIRECT_URI = os.getenv('42_REDIRECT_URI')
+CLIENT_SECRET = os.getenv('42_CLIENT_SECRET')
+
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'home.html')
 
 
 
 def initiate_oauth(request: HttpRequest) -> HttpResponseRedirect:
-    load_dotenv() # load .env to environment
     state = binascii.hexlify(os.urandom(16)).decode()  # To prevent CSRF attacks
-    client_id = os.getenv("42_CLIENT_ID")
-    redirect_uri = "http://127.0.0.1:8000/oauth_callback"  
-    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={client_id}&redirect_uri={redirect_uri}&state={state}&response_type=code"  
+    auth_url = f"https://api.intra.42.fr/oauth/authorize?client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&state={state}&response_type=code"  
     request.session['oauth_state'] = state 
     return redirect(auth_url)
 
@@ -41,17 +44,13 @@ def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
         
         del request.session['oauth_state']
 
-        client_id = os.getenv("42_CLIENT_ID")
-        client_secret = os.getenv("42_CLIENT_SECRET")  
-        
-
         # Exchange access token
         data = {
             'grant_type': 'authorization_code',
-            'client_id': client_id,
-            'client_secret': client_secret,
+            'client_id': CLIENT_ID,
+            'client_secret': CLIENT_SECRET,
             'code': code,
-            'redirect_uri': "http://127.0.0.1:8000/oauth_callback"
+            'redirect_uri': REDIRECT_URI
         }
         response = requests.post(url ="https://api.intra.42.fr/oauth/token", data=data)
         if response.status_code == 200:
