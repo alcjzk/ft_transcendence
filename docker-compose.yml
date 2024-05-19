@@ -13,6 +13,12 @@ services:
     restart: unless-stopped
     networks: ["transcendence"]
     env_file: .env
+  parcel:
+    image: parcel
+    container_name: parcel
+    build: parcel
+    restart: unless-stopped
+    networks: ["transcendence"]
 
 networks:
   transcendence:
