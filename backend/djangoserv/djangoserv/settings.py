@@ -80,8 +80,8 @@ if os.getenv('USE_POSTGRES'):
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'django',
-            'USER': 'django',# FIXME: Move to .env
-            'PASSWORD': 'django',
+            'USER': os.getenv('DB_DJANGO_USER'),
+            'PASSWORD': os.getenv('DB_DJANGO_PASSWORD'),
             'HOST': 'postgres',
             'PORT': '5432',
         }
