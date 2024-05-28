@@ -19,6 +19,19 @@ services:
     build: parcel
     restart: unless-stopped
     networks: ["transcendence"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  postgres:
+    image: postgres
+    container_name: postgres
+    build: postgres
+    restart: unless-stopped
+    networks: ["transcendence"]
+    env_file: .env
+    shm_size: 128mb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
 
 networks:
   transcendence:
