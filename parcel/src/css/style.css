@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  font-family: monospace;
+  color: #00ff00;
+}
+
+#terminal {
+  width: 800px;
+  height: 600px;
+  background-color: black;
+  border: 5px solid #00ff00;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+canvas{
+  border: 5px solid #00ff00;
+  box-sizing: border-box;
+}
+#output {
+  flex: 1;
+  overflow-y: auto;
+  color: #00ff00;
+}
+
+#input {
+  border: none;
+  background: none;
+  color: #00ff00;
+  font-size: 16px;
+  outline: none;
+}
