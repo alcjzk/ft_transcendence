@@ -8,6 +8,7 @@ RUN apk add --no-cache wget \
 
 COPY ./monitoring/grafana/provisioning /grafana/conf/provisioning
 COPY ./monitoring/grafana/dashboards /var/lib/grafana/dashboards
+COPY ./monitoring/grafana/grafana.ini /grafana/conf/
 
 EXPOSE 3000
 
