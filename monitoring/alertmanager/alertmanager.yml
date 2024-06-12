@@ -1,0 +1,16 @@
+global:
+  resolve_timeout: 1m
+
+route:
+  receiver: 'email-notifications'
+
+receivers:
+  - name: 'email-notifications'
+    email_configs:
+      - to: '__SMTP_RECEIVER__'
+        from: '__SMTP_SENDER__'
+        smarthost: '__SMTP_HOST__'
+        auth_username: '__SMTP_SENDER__'
+        auth_password: '__SMTP_PASSWORD__'
+        auth_identity: '__SMTP_SENDER__'
+        require_tls: true
