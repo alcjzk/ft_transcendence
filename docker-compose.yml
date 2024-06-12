@@ -35,6 +35,65 @@ services:
     shm_size: 128mb
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
+  prometheus:
+    build:
+      context: .
+      dockerfile: ./monitoring/prometheus/Dockerfile
+    container_name: prometheus
+    volumes:
+      - prometheus-storage:/prometheus-data
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+    networks: ["monitoring"]
+  grafana:
+    build:
+      context: .
+      dockerfile: ./monitoring/grafana/Dockerfile
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - .grafana_env
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: ["monitoring"]
+  node-exporter:
+    build:
+      context: .
+      dockerfile: ./monitoring/node-exporter/Dockerfile
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: ["monitoring"]
+  alertmanager:
+    build:
+      context: .
+      dockerfile: ./monitoring/alertmanager/Dockerfile
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    env_file:
+      - .alert_env
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: ["monitoring"]
 
 networks:
   transcendence:
+  monitoring:
+
+volumes:
+  grafana-storage:
+  prometheus-storage:
