@@ -6,6 +6,9 @@ services:
     ports: ["80:80"]
     restart: unless-stopped
     networks: ["transcendence"]
+    depends_on:
+      - django
+      - parcel
   django:
     image: django
     container_name: django
@@ -13,15 +16,15 @@ services:
     restart: unless-stopped
     networks: ["transcendence"]
     env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
   parcel:
     image: parcel
     container_name: parcel
     build: parcel
     restart: unless-stopped
     networks: ["transcendence"]
-    depends_on:
-      postgres:
-        condition: service_healthy
   postgres:
     image: postgres
     container_name: postgres
