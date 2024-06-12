@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.20.0
 
 RUN apk add --no-cache wget \
     && wget https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz \

@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:3.20.0
 
 RUN apk add --no-cache wget \
     && wget https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-amd64.tar.gz \
