@@ -5,10 +5,13 @@ services:
     build: nginx
     ports: ["80:80"]
     restart: unless-stopped
-    networks: ["transcendence"]
+    networks: 
+      - transcendence
+      - monitoring
     depends_on:
       - django
       - parcel
+
   django:
     image: django
     container_name: django
@@ -19,12 +22,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+
   parcel:
     image: parcel
     container_name: parcel
     build: parcel
     restart: unless-stopped
     networks: ["transcendence"]
+
   postgres:
     image: postgres
     container_name: postgres
@@ -36,5 +41,61 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
 
+  prometheus:
+    build:
+      context: .
+      dockerfile: ./monitoring/prometheus/Dockerfile
+    container_name: prometheus
+    volumes:
+      - prometheus-storage:/prometheus-data
+    restart: unless-stopped
+    networks: ["monitoring"]
+
+  grafana:
+    build:
+      context: .
+      dockerfile: ./monitoring/grafana/Dockerfile
+    container_name: grafana
+    env_file:
+      - .grafana_env
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: ["monitoring"]
+
+  node-exporter:
+    build:
+      context: .
+      dockerfile: ./monitoring/node-exporter/Dockerfile
+    container_name: node-exporter
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: ["monitoring"]
+
+  alertmanager:
+    build:
+      context: .
+      dockerfile: ./monitoring/alertmanager/Dockerfile
+    container_name: alertmanager
+    env_file:
+      - .alert_env
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    restart: unless-stopped
+    networks: ["monitoring"]
+
 networks:
   transcendence:
+  monitoring:
+
+volumes:
+  grafana-storage:
+  prometheus-storage:
+

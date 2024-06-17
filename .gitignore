@@ -3,3 +3,5 @@
 !.gitignore
 !docker-compose.yml
 !example.env
+!example.grafana_env
+!example.alert_env
