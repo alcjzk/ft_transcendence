@@ -1,12 +1,15 @@
 body {
   margin: 0;
   height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* Hide overflow to prevent scrolling */
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: black;
   font-family: monospace;
   color: #00ff00;
+  position: relative;
 }
 
 #terminal {
@@ -19,12 +22,19 @@ body {
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
+  position: relative; /* Ensure terminal is positioned relative */
+  z-index: 10; /* Higher z-index to be on top of the confetti canvas */
 }
 
-canvas{
-  border: 5px solid #00ff00;
-  box-sizing: border-box;
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Default z-index for confetti canvas */
 }
+
 #output {
   flex: 1;
   overflow-y: auto;

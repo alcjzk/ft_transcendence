@@ -1,10 +1,62 @@
 import * as THREE from 'three';
 
+document.addEventListener('DOMContentLoaded', function() {
+    initConfetti();
+});
+
+function initConfetti() {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.zIndex = '-1';
+    document.body.appendChild(renderer.domElement);
+
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+    const colors = [];
+
+    for (let i = 0; i < 1000; i++) {
+        const x = THREE.MathUtils.randFloatSpread(window.innerWidth);
+        const y = THREE.MathUtils.randFloatSpread(window.innerHeight);
+        const z = THREE.MathUtils.randFloatSpread(200);
+
+        vertices.push(x, y, z);
+
+        const color = new THREE.Color();
+        color.setHSL(Math.random(), 1.0, 0.5);
+        colors.push(color.r, color.g, color.b);
+    }
+
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({ size: 5, vertexColors: true });
+    const points = new THREE.Points(geometry, material);
+
+    scene.add(points);
+
+    camera.position.z = 500;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        points.rotation.x += 0.005;
+        points.rotation.y += 0.005;
+        renderer.render(scene, camera);
+    }
+
+    animate();
+}
+
+let language = 'en';
 let commandHistory = [];
 let historyIndex = -1;
-let player1 = ''
+let player1 = '';
 let player2 = '';
-let gameOwner = 'MIKE'
+let gameOwner = 'MIKE';
 let tournamentPlayers = [];
 let gameInterval = null;
 let maxLines  = 35;
@@ -15,56 +67,68 @@ const modeTerminal = 0;
 const modeGameCreation = 1;
 const modeGame = 2;
 const modeNextMatch = 3;
+const modeBetweenGames = 4;
 
 document.addEventListener('keydown', function(event) {
-    switch (mode){
+    switch (mode) {
         case modeTerminal:
             handleTerminalInput(event);
-            break ;
+            break;
         case modeGameCreation:
             handleGameCreation(event);
-            break ;
+            break;
         case modeGame:
             handleGameInput(event);
-            break ;
+            break;
         case modeNextMatch:
             handleNextMatch(event);
-            break ;
+            break;
+        case modeBetweenGames:
+            handeBetweenGames(event);
+            break;
         default:
-            return ;
-    };
+            return;
+    }
 });
 
-function handleNextMatch(event)
-{
-    if (tournamentPlayers.length === 1) {
-        document.getElementById('output').innerText += '\n' + tournamentPlayers[0] + ' IS THE BIG TIME WINNER!\n Press ANY KEY to exit game mode...\n';
-        //celebrateWinner();
-        mode = modeTerminal;
+function handeBetweenGames(event) {
+    if (event.key === 'Enter') {
+        printBigTimeWinner();
         tournamentPlayers = [];
+        mode = modeTerminal;
+        return;
+    }
+    else 
+        document.getElementById('input').value = '';
+}
+
+function handleNextMatch(event) {
+    if (tournamentPlayers.length === 1) {
+        printTournamentEnded();
+        mode = modeBetweenGames;
         return;
     }
     player1 = tournamentPlayers[0];
     player2 = tournamentPlayers[1];
-    document.getElementById('output').innerText += `Prepare for the match: ${player1} vs ${player2}. Press ANY KEY when ready.\n` ;
+    printPrepareMatch(player1, player2);
     mode = modeGame;
 }
 
-function generateTerminalHistory()
-{
+function generateTerminalHistory() {
     let retValue = '';
     let historyIndexCopy = commandHistory.length;
     if (historyIndexCopy < maxLines)
         for (let i = 0; i < historyIndexCopy; i++)
-            retValue  += commandHistory[i] + '\n';
+            retValue += commandHistory[i] + '\n';
     else
-        for (i = historyIndexCopy - maxLines; i < historyIndexCopy; i++)
-            retValue  += commandHistory[i] + '\n';
+        for (let i = historyIndexCopy - maxLines; i < historyIndexCopy; i++)
+            retValue += commandHistory[i] + '\n';
     return retValue;
 }
 
-function handleGameInput(event){
-    setupPongGame(player1, player2);
+function handleGameInput(event) {
+    if (event.key === 'Enter')
+        setupPongGame(player1, player2);
 }
 
 function shufflePlayers() {
@@ -78,40 +142,94 @@ function handleGameCreation(event) {
     if (event.key === 'Enter') {
         let input = document.getElementById('input').value;
         input = input.toUpperCase();
-        if (tournamentNamesGathered !== tournamentPlayerCount){
+        if (tournamentNamesGathered !== tournamentPlayerCount) {
             if (input === '' || tournamentPlayers.includes(input))
-                return ;
+                return;
             tournamentPlayers.push(input);
-            document.getElementById('output').innerText += 'Player registered: ' + input + '\n';
+            printPlayerRegistered(input);
             document.getElementById('input').value = '';
             tournamentNamesGathered++;
-            if (tournamentNamesGathered === tournamentPlayerCount){
+            if (tournamentNamesGathered === tournamentPlayerCount) {
                 shufflePlayers();
                 handleNextMatch(0);
-                }
+            }
         }
     }
-    return ;
+    return;
 }
 
-function printWhoAmI(){
-    document.getElementById('output').innerText = 'How exactly did you forget who you are....\nClassic ${gameOwner} moment...\nPress ANY KEY to continue...';
+function printPlayerRegistered(input) {
+    if (language === 'en')
+        document.getElementById('output').innerText += 'Player registered: ' + input + '\n';
+    if (language === 'fi')
+        document.getElementById('output').innerText += 'Pelaaja rekisteröity: ' + input + '\n';
 }
 
-function printInfo(){
+function printWhoAmI() {
+    if (language === 'en')
+        document.getElementById('output').innerText = `How exactly did you forget who you are....\nClassic ${gameOwner} moment...\nPress ANY KEY to continue...`;
+    if (language === 'fi')
+        document.getElementById('output').innerText = `Miten tarkalleen ottaen unohdit kuka olet....\nKlassinen ${gameOwner} hetki...\nPaina MITÄ TAHANSA NÄPPÄINTÄ jatkaaksesi...`;
+}
+
+function printInfo() {
     document.getElementById('output').innerText = 'Trancendence is the final project of the 42 curriculum!\nTo pass you need 7 major modules.\nTwo minor modules equate to one major module.\nWe have done the following modules:....\nPress ANY KEY to continue...';
 }
 
-function printAbout(){
-    document.getElementById('output').innerText = 'Our team members are as followed:\n|TEAM NAMES HERE|\nPress ANY KEY to continue...';
+function printAbout() {
+    if (language === 'en')
+        document.getElementById('output').innerText = 'Our team members are as followed:\nDean Ruina druina, Writer\'s soul\nLuis Sileoni lsileoni, Writer\'s soul\nTuomas Jääsalo tjaasalo\nMichail Karatzidis mkaratzi, Hand of Hive\nPress ANY KEY to continue...';
+    if (language === 'fi')
+        document.getElementById('output').innerText = 'Tiimimme jäsenet ovat seuraavat:\nDean Ruina druina, Writer\'s soul\nLuis Sileoni lsileoni, Writer\'s soul\nTuomas Jääsalo tjaasalo\nMichail Karatzidis mkaratzi, Hand of Hive\nPaina MITÄ TAHANSA NÄPPÄINTÄ jatkaaksesi...';
 }
 
-function printRandomQuote(){
-    document.getElementById('output').innerText = 'Insanity is doing the same thing over and over expecting different results!\nPress ANY KEY to continue...';
+function printRandomQuote() {
+    if (language === 'en')
+        document.getElementById('output').innerText = 'Insanity is doing the same thing over and over expecting different results!\nPress ANY KEY to continue...';
+    if (language === 'fi')
+        document.getElementById('output').innerText = 'Hulluus on sitä, että tekee saman asian uudestaan ja uudestaan odottaen eri tuloksia!\nPaina MITÄ TAHANSA NÄPPÄINTÄ jatkaaksesi...';
 }
 
-function printHelp(){
-    document.getElementById('output').innerText = 'We are currently supporting the following commands:\n|LIST COMMANDS HERE|\nPress ANY KEY to continue...';
+function printHelp() {
+    if (language === 'en')
+        document.getElementById('output').innerText = 'We are currently supporting the following commands:\nplay - play 1vs1 vs a friend, the player on the left uses \'w\' and \'s\' to move and the player on the right his up and down arrows\ninfo - prints the relevant details about this project including modules done\nabout - prints information about the team members\nrandomquote - prints a random quote\nhelp - prints help/instructions for the user\nwhoami - prints users username\nlogout - logs user out of the game\nPress ANY KEY to continue...';
+    if (language === 'fi')
+        document.getElementById('output').innerText = 'Tällä hetkellä tuemme seuraavia komentoja:\nplay - pelaa 1vs1 kaveria vastaan, vasemmanpuoleinen pelaaja käyttää \'w\' ja \'s\' liikkuakseen ja oikeanpuoleinen pelaaja käyttää ylös- ja alasnuolia\ninfo - tulostaa tähän projektiin liittyvät tiedot, mukaan lukien suoritetut moduulit\nabout - tulostaa tietoja tiimin jäsenistä\nrandomquote - tulostaa satunnaisen lainauksen\nhelp - tulostaa käyttäjälle apua/ohjeita\nwhoami - tulostaa käyttäjän käyttäjätunnuksen\nlogout - kirjaa käyttäjän ulos pelistä\nPaina MITÄ TAHANSA NÄPPÄINTÄ jatkaaksesi...';
+}
+
+function printInvalidLanguageSelected() {
+    if (language === 'en')
+        document.getElementById('output').innerText += 'Invalid language selected. Use "langswap fi" for Finnish or "langswap en" for English.\n Press ANY KEY to continue...';
+    if (language === 'fi')
+        document.getElementById('output').innerText += 'Virheellinen kieli valittu. Käytä "langswap fi" suomeksi tai "langswap en" englanniksi.\n Paina MITÄ TAHANSA NÄPPÄINTÄ jatkaaksesi...';
+}
+
+function printInvalidTournament() {
+    if (language === 'en')
+        document.getElementById('output').innerText += 'Invalid tournament. Use "tournament <number_of_players>".\n Press ANY KEY to continue...';
+    if (language === 'fi')
+        document.getElementById('output').innerText += 'Virheellinen turnaus. Käytä "tournament <pelaajien_määrä>".\n Paina MITÄ TAHANSA NÄPPÄINTÄ jatkaaksesi...';
+}
+
+function printBigTimeWinner() {
+    if (language === 'en')
+        document.getElementById('output').innerText = tournamentPlayers[0] + ' IS THE BIG TIME WINNER!\n Make sure to congratulate the winner!\nPress ANY KEY to go back to the terminal...\n';
+    if (language === 'fi')
+        document.getElementById('output').innerText = tournamentPlayers[0] + ' ON SUURI VOITTAJA!\n Muista onnitella voittajaa!\nPaina MITÄ TAHANSA NÄPPÄINTÄ palataksesi takaisin päätelaitteeseen...\n';
+}
+
+function printTournamentEnded() {
+    if (language === 'en')
+        document.getElementById('output').innerText += 'The tournament has ended!\n Press ENTER KEY to exit game mode...\n';
+    if (language === 'fi')
+        document.getElementById('output').innerText += 'Turnaus on päättynyt!\n Paina ENTER-näppäintä poistuaksesi pelitilasta...\n';
+}
+
+function printPrepareMatch(player1, player2) {
+    if (language === 'en')
+        document.getElementById('output').innerText += `Prepare for the match: ${player1} vs ${player2}. Press ENTER KEY when ready.\n`;
+    if (language === 'fi')
+        document.getElementById('output').innerText += `Valmistaudu otteluun: ${player1} vs ${player2}. Paina ENTER-näppäintä, kun olet valmis.\n`;
 }
 
 function handleTerminalInput(event) {
@@ -119,50 +237,57 @@ function handleTerminalInput(event) {
     if (event.key === 'Enter') {
         input = document.getElementById('input').value;
         input = input.toLowerCase();
-        if(input === ''){
+        if (input === '') {
             document.getElementById('output').innerText = generateTerminalHistory();
-            return ;
-        }    
+            return;
+        }
         commandHistory.push(input);
         historyIndex = commandHistory.length;
         document.getElementById('input').value = '';
-        switch (input){
-            case '/play':
+        switch (input) {
+            case 'play':
                 startTournament(2);
-                return ;
-            case '/info':
+                return;
+            case 'info':
                 printInfo();
-                return ;
-            case '/about':
+                return;
+            case 'about':
                 printAbout();
-                return ;
-            case '/transcende':
-                break ;
-            case '/randomquote':
+                return;
+            case 'randomquote':
                 printRandomQuote();
-                return ;
-            case '/help':
+                return;
+            case 'help':
                 printHelp();
-                return ;
-            case '/whoami':
+                return;
+            case 'whoami':
                 printWhoAmI();
-                return ;
-            case '/logout':
-                return ;
+                return;
+            case 'logout':
+                return;
             default:
-                break ;
+                break;
         }
-        if (input.toLowerCase().startsWith('/tournament')) {
+        if (input.toLowerCase().startsWith('tournament')) {
             let parts = input.split(' ');
             if (parts.length === 2 && !isNaN(parts[1]) && parseInt(parts[1]) >= 2) {
-                 tournamentPlayerCount = parseInt(parts[1]);
-                 startTournament(tournamentPlayerCount);
-                 return ;
+                tournamentPlayerCount = parseInt(parts[1]);
+                startTournament(tournamentPlayerCount);
+                return;
             } else {
                 document.getElementById('output').innerHTML = '';
-                document.getElementById('output').innerText += 'Invalid tournament. Use "tournament <number_of_players>".\n Press ANY KEY to continue...';
-                return ;
-             }
+                printInvalidTournament();
+                return;
+            }
+        } else if (input.toLowerCase().startsWith('langswap')) {
+            let parts = input.split(' ');
+            if (parts.length === 2 && (parts[1] === 'fi' || parts[1] == 'en')) {
+                language = parts[1];
+            } else {
+                document.getElementById('output').innerHTML = '';
+                printInvalidLanguageSelected();
+                return;
+            }
         }
     } else if (event.key === 'ArrowUp') {
         if (historyIndex > 0) {
@@ -181,13 +306,15 @@ function handleTerminalInput(event) {
     document.getElementById('output').innerText = generateTerminalHistory();
 }
 
-
 function startTournament(numPlayers) {
     tournamentPlayers.push(gameOwner); // Initialize with Player 1
     tournamentNamesGathered = 1;
     tournamentPlayerCount = numPlayers;
     document.getElementById('output').innerText = '';
-    document.getElementById('output').innerText += 'Enter names for the remaining ' + (numPlayers - 1) + ' players:\n';
+    if (language === 'en')
+        document.getElementById('output').innerText += 'Enter names for the remaining ' + (numPlayers - 1) + ' players:\n';
+    if (language === 'fi')
+        document.getElementById('output').innerText += 'Syötä jäljellä olevien ' + (numPlayers - 1) + ' pelaajan nimet:\n';
     mode = modeGameCreation;
 }
 
@@ -208,14 +335,15 @@ function setupPongGame(player1, player2) {
     const paddleHeight = 100;
     let paddle1Y = (canvas.height - paddleHeight) / 2;
     let paddle2Y = (canvas.height - paddleHeight) / 2;
-    const paddleSpeed = 10;
+    const paddleSpeed = 30;
 
     const ballSize = 10;
     let ballX = canvas.width / 2;
     let ballY = canvas.height / 2;
-    let ballSpeedX = 5;
-    let ballSpeedY = 5;
+    let ballSpeedX = 8;
+    let ballSpeedY = 8;
     mode = 42;
+
     function draw() {
         ctx.fillStyle = 'black';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -279,7 +407,10 @@ function setupPongGame(player1, player2) {
 
         document.body.removeChild(canvas);
         document.getElementById('terminal').style.display = 'flex';
-        document.getElementById('output').innerText = `${winner} won!\n`;
+        if (language === 'en')
+            document.getElementById('output').innerText = `${winner} won!\n`;
+        if (language === 'fi')
+            document.getElementById('output').innerText = `${winner} voitti!\n`;
         handleNextMatch(1);
     }
 
@@ -307,70 +438,3 @@ function setupPongGame(player1, player2) {
         }
     });
 }
-
-
-
-// Set up the scene, camera, and renderer
-let scene, camera, renderer, confetti;
-let confettiCount = 1000;
-let confettiGeometry, confettiMaterial;
-
-// Initialize the Three.js scene and confetti
-function initConfetti() {
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  renderer = new THREE.WebGLRenderer({ antialias: true });
-
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-
-  camera.position.z = 5;
-
-  confettiGeometry = new THREE.BufferGeometry();
-  const confettiPositions = new Float32Array(confettiCount * 3);
-  const confettiColors = new Float32Array(confettiCount * 3);
-
-  for (let i = 0; i < confettiCount; i++) {
-    confettiPositions[i * 3] = (Math.random() - 0.5) * 10;
-    confettiPositions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    confettiPositions[i * 3 + 2] = (Math.random() - 0.5) * 10;
-
-    confettiColors[i * 3] = Math.random();
-    confettiColors[i * 3 + 1] = Math.random();
-    confettiColors[i * 3 + 2] = Math.random();
-  }
-
-  confettiGeometry.setAttribute('position', new THREE.BufferAttribute(confettiPositions, 3));
-  confettiGeometry.setAttribute('color', new THREE.BufferAttribute(confettiColors, 3));
-
-  confettiMaterial = new THREE.PointsMaterial({ size: 0.1, vertexColors: true });
-  confetti = new THREE.Points(confettiGeometry, confettiMaterial);
-
-  scene.add(confetti);
-
-  animateConfetti();
-}
-
-// Animation loop
-function animateConfetti() {
-  requestAnimationFrame(animateConfetti);
-
-  // Update confetti positions
-  const positions = confetti.geometry.attributes.position.array;
-  for (let i = 0; i < confettiCount; i++) {
-    positions[i * 3 + 1] -= 0.02; // Move down
-
-    if (positions[i * 3 + 1] < -5) {
-      positions[i * 3 + 1] = 5; // Reset position when out of view
-    }
-  }
-  confetti.geometry.attributes.position.needsUpdate = true;
-
-  renderer.render(scene, camera);
-}
-
-// Function to start the confetti animation
-function celebrateWinner() {
-  initConfetti();
-}
-
