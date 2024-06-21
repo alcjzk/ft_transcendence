@@ -6,4 +6,4 @@ COPY . .
 
 RUN npm install
 
-CMD [ "npx", "parcel", "--host", "0.0.0.0", "src/index.html" ]
+CMD [ "npm", "run", "start:prod" ]
