@@ -115,9 +115,10 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - es-logs:/usr/share/elasticsearch/logs
+      - ./logging/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
+      - 9300:9300
     restart: unless-stopped
     networks: ["monitoring"]
 
@@ -127,13 +128,13 @@ services:
     volumes:
       - ./logging/logstash/pipeline:/usr/share/logstash/pipeline
       - logstash-logs:/usr/share/logstash/logs
-    ports:
-      - "5044:5044"
-      - "9600:9600"
     restart: unless-stopped
     networks: ["monitoring"]
     depends_on:
       - elasticsearch
+    ports:
+      - 9600:9600
+      - 5044:5044
 
   kibana:
     build: ./logging/kibana
@@ -141,8 +142,6 @@ services:
     volumes:
       - ./logging/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
       - kibana-logs:/kibanalog/
-    ports:
-      - "5601:5601"
     restart: unless-stopped
     environment:
       - ELASTICSEARCH_PASSWORD="changeme"
@@ -169,6 +168,8 @@ services:
     networks: ["monitoring"]
     depends_on:
       - logstash
+    ports:
+      - 5601:5601
 
 networks:
   transcendence:
