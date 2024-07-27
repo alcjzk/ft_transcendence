@@ -2,7 +2,7 @@ server.name: kibana
 server.host: "0.0.0.0"
 server.basePath: "/kibana"
 server.rewriteBasePath: true
-elasticsearch.hosts: http://elasticsearch:9200
+elasticsearch.hosts: [ http://elasticsearch:9200 ]
 xpack.apm.enabled: true
 xpack.apm.ui.enabled: true
 xpack.security.encryptionKey: "nl6lh0U2eukMq8DFml7hE9rDM4yr3op4"
