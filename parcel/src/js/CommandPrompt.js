@@ -44,7 +44,7 @@ const commands = {
             en: `We are currently supporting the following commands:
                  play - play 1vs1 vs a friend, the player on the left uses 'w' and 's' to move and the player on the right his up and down arrows
                  info - prints the relevant details about this project including modules done
-                 about - prints information about us the team members
+                 aboutus - prints information about us the team members
                  randomquote - prints a random quote
                  help - prints help/instructions for the user
                  whoami - prints users username
