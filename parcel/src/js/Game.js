@@ -134,6 +134,10 @@ class Game extends HTMLElement {
                     break;
                 case 's': this.player1.moveDown = true;
                     break;
+                case 'W': this.player1.moveUp = true;
+                    break;
+                case 'S': this.player1.moveDown = true;
+                    break;
                 case 'ArrowUp': this.player2.moveUp = true;
                     break;
                 case 'ArrowDown': this.player2.moveDown = true;
@@ -146,6 +150,10 @@ class Game extends HTMLElement {
                 case 'w': this.player1.moveUp = false;
                     break;
                 case 's': this.player1.moveDown = false;
+                    break;
+                case 'W': this.player1.moveUp = false;
+                    break;
+                case 'S': this.player1.moveDown = false;
                     break;
                 case 'ArrowUp': this.player2.moveUp = false;
                     break;
