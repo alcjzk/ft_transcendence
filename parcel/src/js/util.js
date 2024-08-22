@@ -16,6 +16,7 @@ export const isDigitString = value => {
     return /^\d+$/g.test(value);
 };
 
+
 export const localize = (translations) => {
     if (translations.hasOwnProperty(Session.language))
         return translations[Session.language];
@@ -24,5 +25,3 @@ export const localize = (translations) => {
     else
         this.print(translations[DEFAULT_LANGUAGE]);
 };
-
-

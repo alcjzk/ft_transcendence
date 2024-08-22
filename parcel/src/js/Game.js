@@ -173,8 +173,8 @@ class Game extends HTMLElement {
     announceAndStart() {
         setPage(new Banner({
             text: localize({
-                en: `Prepare for the match: ${this.tournament.players[0]} vs ${this.tournament.players[1]}. Press ENTER KEY when ready.\n`,
-                fi: `Valmistaudu otteluun: ${this.tournament.players[0]} vs ${this.tournament.players[1]}. Paina ENTER-näppäintä, kun olet valmis.\n`,
+                en: `Prepare for the match! Right side ${this.tournament.players[0]} vs ${this.tournament.players[1]} left side. Press ENTER KEY when ready.\n`,
+                fi: `Valmistaudu otteluun! Oikealla ${this.tournament.players[0]} vs ${this.tournament.players[1]} vasemmalla. Paina ENTER-näppäintä, kun olet valmis.\n`,
             }),
             onContinue: () => {
                 setPage(this);
@@ -201,8 +201,8 @@ class Game extends HTMLElement {
                 onContinue: () => {
                     setPage(new Banner({
                         text: localize({
-                            en: `The tournament has ended!\n Press ENTER KEY to exit game mode...\n`,
-                            fi: `Turnaus on päättynyt!\n Paina ENTER-näppäintä poistuaksesi pelitilasta...\n`,
+                            en: `Playtime is over!\n Press ENTER KEY to exit game mode...\n`,
+                            fi: `Peliaika on päättynyt!\n Paina ENTER-näppäintä poistuaksesi pelitilasta...\n`,
                         }),
                         onContinue: () => {
                             setPage(new TerminalPage());

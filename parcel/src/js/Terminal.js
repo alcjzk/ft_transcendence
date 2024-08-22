@@ -20,6 +20,8 @@ class Terminal extends HTMLElement {
         this.appendChild(template.content.cloneNode(true));
         this.input = this.querySelector('.input');
         this.output = this.querySelector('.output');
+        this.output.innerText += `Welcome to Pongers. Our super duper trancendence project.
+        Please use the command \`help\` to see instructions on how to use our terminal!\n\n`;
         this.prompt = new CommandPrompt(this);
     }
 
