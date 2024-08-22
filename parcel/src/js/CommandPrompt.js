@@ -76,7 +76,7 @@ const commands = {
                 Minor module: Database usage: Postgress
                 Minor module: Frontend framework: Bootstrap
                 Minor module: Monitoring system: Grafana\n`,
-            fi: `Tehtyt moduulit:
+            fi: `Tehdyt moduulit:
                 Major module: Microservices
                 Major module: Elk stack
                 Major module: Advanced 3D with threejs
