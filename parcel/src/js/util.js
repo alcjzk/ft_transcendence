@@ -24,5 +24,3 @@ export const localize = (translations) => {
     else
         this.print(translations[DEFAULT_LANGUAGE]);
 };
-
-

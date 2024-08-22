@@ -6,34 +6,37 @@ const TOURNAMENT_PLAYERS_MIN = 2;
 const TOURNAMENT_PLAYERS_MAX = 5;
 
 const commands = {
-    about: commandPrompt => {
+    aboutus: commandPrompt => {
         commandPrompt.terminal.printLocalized({
-            en: `our team members are as followed:
-                 dean ruina druina, writer's soul
-                 luis sileoni lsileoni, writer's soul
-                 tuomas jääsalo tjaasalo
-                 michail karatzidis mkaratzi, hand of hive`,
-
-            fi: `tiimimme jäsenet ovat seuraavat:
-                 dean ruina druina, writer's soul
-                 luis sileoni lsileoni, writer's soul
-                 tuomas jääsalo tjaasalo
-                 michail karatzidis mkaratzi, hand of hive`,
+            en: `Our team members are as follows:
+                 Dean ruina druina, writer's soul
+                 Luis sileoni lsileoni, writer's soul
+                 Tuomas jääsalo tjaasalo
+                 Michail karatzidis mkaratzi, hand of hive\n`,
+                 
+            fi: `Tiimimme jäsenet ovat seuraavat:
+                 Dean ruina druina, writer's soul
+                 Luis sileoni lsileoni, writer's soul
+                 Tuomas jääsalo tjaasalo
+                 Michail karatzidis mkaratzi, hand of hive`
         });
+    },
+    clear: commandPrompt => {
+        commandPrompt.terminal.output.innerText = '';
     },
     randomquote: commandPrompt => {
         commandPrompt.terminal.printLocalized({
-            en: `insanity is doing the same thing over and over expecting different results!`,
-            fi: `hulluus on sitä, että tekee saman asian uudestaan ja uudestaan odottaen eri tuloksia!`,
+            en: `insanity is doing the same thing over and over expecting different results!\n`,
+            fi: `hulluus on sitä, että tekee saman asian uudestaan ja uudestaan odottaen eri tuloksia!\n`,
         });
     },
     whoami: commandPrompt => {
         commandPrompt.terminal.printLocalized({
             en: `How exactly did you forget who you are....
-                 Classic ${Session.user.name} moment...`,
+                 Classic ${Session.user.name} moment...\n`,
 
             fi: `Miten tarkalleen ottaen unohdit kuka olet....
-                 Klassinen ${Session.user.name} hetki...`,
+                 Klassinen ${Session.user.name} hetki...\n`,
         });
     },
     help: commandPrompt => {
@@ -41,28 +44,48 @@ const commands = {
             en: `We are currently supporting the following commands:
                  play - play 1vs1 vs a friend, the player on the left uses 'w' and 's' to move and the player on the right his up and down arrows
                  info - prints the relevant details about this project including modules done
-                 about - prints information about the team members
+                 aboutus - prints information about the team members
                  randomquote - prints a random quote
                  help - prints help/instructions for the user
                  whoami - prints users username
-                 logout - logs user out of the game`,
+                 clear - clears the terminal
+                 chlang - change the language of the terminal
+                 logout - logs user out of the game\n`,
 
             fi: `Tällä hetkellä tuemme seuraavia komentoja:
                  play - pelaa 1vs1 kaveria vastaan, vasemmanpuoleinen pelaaja käyttää 'w' ja 's' liikkuakseen ja oikeanpuoleinen pelaaja käyttää ylös- ja alasnuolia
                  info - tulostaa tähän projektiin liittyvät tiedot, mukaan lukien suoritetut moduulit
-                 about - tulostaa tietoja tiimin jäsenistä
+                 aboutus - tulostaa tietoja tiimin jäsenistä
                  randomquote - tulostaa satunnaisen lainauksen
                  help - tulostaa käyttäjälle apua/ohjeita
                  whoami - tulostaa käyttäjän käyttäjätunnuksen
-                 logout - kirjaa käyttäjän ulos pelistä`,
+                 clear - terminaali-ikkunan tyhjennys
+                 chlang - terminaalikielen vaihto
+                 logout - kirjaa käyttäjän ulos pelistä\n`,
         });
     },
     info: commandPrompt => {
         commandPrompt.terminal.printLocalized({
-            en: `Trancendence is the final project of the 42 curriculum!
-                 To pass you need 7 major modules.
-                 Two minor modules equate to one major module.
-                 We have done the following modules:...`,
+            en: `Done modules:
+                Major module: Microservices
+                Major module: Elk stack
+                Major module: Advanced 3D with threejs
+                Major module: Use framework as backend: Django
+                Major module: Remote authentication
+                Minor module: Language support
+                Minor module: Database usage: Postgress
+                Minor module: Frontend framework: Bootstrap
+                Minor module: Monitoring system: Grafana\n`,
+            fi: `Tehdyt moduulit:
+                Major module: Microservices
+                Major module: Elk stack
+                Major module: Advanced 3D with threejs
+                Major module: Use framework as backend: Django
+                Major module: Remote authentication
+                Minor module: Language support
+                Minor module: Database usage: Postgress
+                Minor module: Frontend framework: Bootstrap
+                Minor module: Monitoring system: Grafana\n`
         });
     },
     chlang: (commandPrompt, args) => {
@@ -71,15 +94,15 @@ const commands = {
         if (!['en', 'fi'].includes(language))
         {
             commandPrompt.terminal.printLocalized({
-                en: `Invalid language selected. Use "${command} fi" for Finnish or "${command} en" for English.`,
-                fi: `Virheellinen kieli valittu. Käytä "${command} fi" suomeksi tai "${command} en" englanniksi.`,
+                en: `Invalid language selected. Use "${command} fi" for Finnish or "${command} en" for English.\n`,
+                fi: `Virheellinen kieli valittu. Käytä "${command} fi" suomeksi tai "${command} en" englanniksi.\n`,
             });
             return;
         }
         Session.language = language;
         commandPrompt.terminal.printLocalized({
-            en: `Language set to english.`,
-            fi: `Kieli asetettu suomeksi.`,
+            en: `Language set to English.\n`,
+            fi: `Kieli asetettu suomeksi.\n`,
         });
     },
     tournament: (commandPrompt, args) => {
@@ -88,15 +111,15 @@ const commands = {
             if (!isDigitString(arg))
                 return null;
             const count = parseInt(arg);
-            if (count < TOURNAMENT_PLAYERS_MIN || count > TOURNAMENT_PLAYERS_MAX)
+            if (count < TOURNAMENT_PLAYERS_MIN || count > TOURNAMENT_PLAYERS_MAX)
                 return null;
             return count;
         })(args.at(1));
 
         if (playerCount === null) {
             commandPrompt.terminal.printLocalized({
-                en: `Invalid tournament. Use "tournament <number_of_players>".`,
-                fi: `Virheellinen turnaus. Käytä "tournament <pelaajien_määrä>".`,
+                en: `Invalid tournament. Use "tournament <number_of_players>".\n`,
+                fi: `Virheellinen turnaus. Käytä "tournament <pelaajien_määrä>".\n`,
             });
         }
         else
@@ -126,11 +149,19 @@ class CommandPrompt {
         {
             this.terminal.print(`> ${value}`);
             this.commands[command].bind(this)(this, args);
-            this.historyIndex = CommandPrompt.history.length - 1;
-            this.terminal.output.scrollTop = this.terminal.output.scrollHeight;
         }
         else
-            console.error(`unknown command ${command}`);
+        {
+            this.terminal.print(`> ${value}`);
+            this.terminal.printLocalized({
+                en: `Sorry we do not support this command: ${command}
+                Use the command \`help\` to find the commands we support.\n`,
+                fi: `Pahoittelut, emme tue kommentoa: ${command}
+                Saat listan tuetuista kommennoista \`help\` kommennolla.\n`
+            })
+        }
+        this.historyIndex = CommandPrompt.history.length - 1;
+        this.terminal.output.scrollTop = this.terminal.output.scrollHeight;
     }
 
     historyAdd(value) {

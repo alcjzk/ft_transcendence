@@ -20,6 +20,12 @@ class Terminal extends HTMLElement {
         this.appendChild(template.content.cloneNode(true));
         this.input = this.querySelector('.input');
         this.output = this.querySelector('.output');
+        this.printLocalized({
+            en: `Welcome to Pongers. Our super duper trancendence project.
+        Please use the command \`help\` to see instructions on how to use our terminal!\n\n`,
+            fi: `Tervetuloa Pongersiin. Super duper trancedence -projektimme.
+        Käytä komentoa \`help\` nähdäksesi ohjeet terminaalimme käyttöön!\n\n`
+        });
         this.prompt = new CommandPrompt(this);
     }
 

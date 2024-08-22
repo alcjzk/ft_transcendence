@@ -22,8 +22,16 @@ class TournamentPrompt {
     onInput(value) {
         const player = value.toUpperCase();
         if (!this.tournament.addPlayer(player))
-            return; // TODO: Error message?
-
+        {
+            if (player === ``)
+                return ;
+            else
+                this.terminal.printLocalized({
+                    en: `Player with the name ${player} is already registered.`,
+                    fi: `Pelaaja ${player} on jo rekisteröity.`,
+                });
+            return ;
+        }
         this.terminal.printLocalized({
             en: `Player registered: ${value}`,
             fi: `Pelaaja rekisteröity: ${value}`,
