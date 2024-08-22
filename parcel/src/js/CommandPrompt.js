@@ -149,12 +149,9 @@ class CommandPrompt {
         {
             this.terminal.print(`> ${value}`);
             this.commands[command].bind(this)(this, args);
-            this.historyIndex = CommandPrompt.history.length - 1;
-            this.terminal.output.scrollTop = this.terminal.output.scrollHeight;
         }
         else
         {
-            console.error(`unknown command ${command}`);
             this.terminal.print(`> ${value}`);
             this.terminal.printLocalized({
                 en: `Sorry we do not support this command: ${command}
@@ -162,9 +159,9 @@ class CommandPrompt {
                 fi: `Pahoittelut, emme tue kommentoa: ${command}
                 Saat listan tuetuista kommennoista \`help\` kommennolla.\n`
             })
-            this.historyIndex = CommandPrompt.history.length - 1;
-            this.terminal.output.scrollTop = this.terminal.output.scrollHeight;    
         }
+        this.historyIndex = CommandPrompt.history.length - 1;
+        this.terminal.output.scrollTop = this.terminal.output.scrollHeight;
     }
 
     historyAdd(value) {
