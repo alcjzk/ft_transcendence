@@ -8,7 +8,7 @@ const TOURNAMENT_PLAYERS_MAX = 5;
 const commands = {
     aboutus: commandPrompt => {
         commandPrompt.terminal.printLocalized({
-            en: `Our team members are as followed:
+            en: `Our team members are as follows:
                  Dean ruina druina, writer's soul
                  Luis sileoni lsileoni, writer's soul
                  Tuomas jääsalo tjaasalo
@@ -44,7 +44,7 @@ const commands = {
             en: `We are currently supporting the following commands:
                  play - play 1vs1 vs a friend, the player on the left uses 'w' and 's' to move and the player on the right his up and down arrows
                  info - prints the relevant details about this project including modules done
-                 aboutus - prints information about us the team members
+                 aboutus - prints information about the team members
                  randomquote - prints a random quote
                  help - prints help/instructions for the user
                  whoami - prints users username
