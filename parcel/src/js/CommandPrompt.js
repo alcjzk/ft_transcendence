@@ -1,6 +1,6 @@
-import Session from './Session.js';
 import TournamentPrompt from './TournamentPrompt.js';
-import { isDigitString } from './util.js';
+import LoginPage from './LoginPage.js';
+import { isDigitString, setPage } from './util.js';
 
 const TOURNAMENT_PLAYERS_MIN = 2;
 const TOURNAMENT_PLAYERS_MAX = 5;
@@ -31,12 +31,13 @@ const commands = {
         });
     },
     whoami: commandPrompt => {
+        const name = sessionStorage.getItem('first_name');
         commandPrompt.terminal.printLocalized({
             en: `How exactly did you forget who you are....
-                 Classic ${Session.user.name} moment...\n`,
+                 Classic ${name} moment...\n`,
 
             fi: `Miten tarkalleen ottaen unohdit kuka olet....
-                 Klassinen ${Session.user.name} hetki...\n`,
+                 Klassinen ${name} hetki...\n`,
         });
     },
     help: commandPrompt => {
@@ -99,7 +100,7 @@ const commands = {
             });
             return;
         }
-        Session.language = language;
+        sessionStorage.setItem('language', language);
         commandPrompt.terminal.printLocalized({
             en: `Language set to English.\n`,
             fi: `Kieli asetettu suomeksi.\n`,
@@ -127,6 +128,12 @@ const commands = {
     },
     play: commandPrompt => {
         commandPrompt.terminal.prompt = new TournamentPrompt(commandPrompt.terminal, 2);
+    },
+    logout: CommandPrompt => {
+        sessionStorage.removeItem('first_name');
+        sessionStorage.removeItem('language');
+        fetch('/auth/logout')
+            .then(() => setPage(new LoginPage()));
     },
 };
 
