@@ -5,8 +5,3 @@ server.rewriteBasePath: true
 elasticsearch.hosts: [ http://elasticsearch:9200 ]
 xpack.apm.enabled: true
 xpack.apm.ui.enabled: true
-xpack.security.encryptionKey: "nl6lh0U2eukMq8DFml7hE9rDM4yr3op4"
-xpack.encryptedSavedObjects.encryptionKey: "QyVNYWwQOez3knBQf03r8Mi6XNGHh2kb"
-xpack.reporting.encryptionKey: "eaKLS4nciRtX2WraG5NMtVM2kGZ4LN7a"
-elasticsearch.username: "kibana_system"
-elasticsearch.password: "changeme"
