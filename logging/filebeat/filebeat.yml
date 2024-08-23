@@ -5,7 +5,6 @@ filebeat.config:
     path: ${path.config}/modules.d/*.yml
     reload.enabled: false
 
-# Input for Docker JSON logs
 filebeat.inputs:
 - type: log
   enabled: true
@@ -16,7 +15,6 @@ filebeat.inputs:
   processors:
     - add_docker_metadata: ~
 
-# Input for other non-JSON logs
 - type: log
   enabled: true
   paths:
@@ -26,26 +24,6 @@ filebeat.inputs:
     - /usr/share/logstash/logs/*.log
     - /kibanalog/*.log
     - /grafana/data/log/*.log
-
-filebeat.autodiscover:
-  providers:
-    - type: docker
-      hints.enabled: true
-      hints.default_config:
-        type: container
-        paths:
-          - /var/lib/docker/containers/${data.container.id}/*-json.log
-      templates:
-        - condition:
-            contains:
-              docker.container.image: elasticsearch
-          config:
-            - module: elasticsearch
-              server:
-                input:
-                  type: container
-                  paths:
-                    - /var/lib/docker/containers/${data.container.id}/*-json.log
 
 processors:
   - add_cloud_metadata: ~
