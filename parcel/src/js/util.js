@@ -1,6 +1,6 @@
 import Session from './Session.js';
 
-const DEFAULT_LANGUAGE = 'en';
+export const DEFAULT_LANGUAGE = 'en';
 
 export const clamp = (value, min, max) => {
     return Math.min(Math.max(value, min), max);
@@ -17,8 +17,9 @@ export const isDigitString = value => {
 };
 
 export const localize = (translations) => {
-    if (translations.hasOwnProperty(Session.language))
-        return translations[Session.language];
+    const language = sessionStorage.getItem('language');
+    if (translations.hasOwnProperty(language))
+        return translations[language];
     else if (!translations.hasOwnProperty(DEFAULT_LANGUAGE))
         console.error(`Invalid translations: ${translations}`);
     else

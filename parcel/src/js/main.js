@@ -1,5 +1,27 @@
+import LoginPage from './LoginPage.js';
 import TerminalPage from './TerminalPage.js';
-import Banner from './Banner.js';
-import { setPage } from './util.js';
+import { setPage, DEFAULT_LANGUAGE } from './util.js';
 
-setPage(new TerminalPage());
+const fetchProfile = async () => {
+    try {
+        const response = await fetch('auth/profile');
+        if (!response.ok)
+            return null;
+        const profile = await response.json();
+        return profile;
+    }
+    catch {
+        return null;
+    }
+};
+
+fetchProfile().then(profile => {
+    if (profile) {
+        sessionStorage.setItem('first_name', profile.first_name ?? 'unknown user');
+        sessionStorage.setItem('language', profile.language ?? DEFAULT_LANGUAGE);
+        setPage(new TerminalPage());
+    }
+    else
+        setPage(new LoginPage());
+});
+
