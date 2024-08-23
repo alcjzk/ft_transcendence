@@ -64,11 +64,10 @@ services:
       dockerfile: ./monitoring/grafana/Dockerfile
     container_name: grafana
     env_file:
-      - .grafana_env
+      - .env
     volumes:
       - grafana-logs:/grafana/data/log
       - grafana-storage:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       prometheus:
         condition: service_healthy
@@ -92,7 +91,7 @@ services:
       dockerfile: ./monitoring/alertmanager/Dockerfile
     container_name: alertmanager
     env_file:
-      - .alert_env
+      - .env
     depends_on:
       prometheus:
         condition: service_healthy
@@ -102,8 +101,8 @@ services:
   elasticsearch:
     build: ./logging/elasticsearch
     container_name: elasticsearch
+    env_file: .env
     environment:
-      - ELASTIC_PASSWORD="changeme"
       - ES_JAVA_OPTS=-Xmx256m -Xms256m
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -115,7 +114,6 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - es-logs:/usr/share/elasticsearch/logs
-      - ./logging/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
       - 9200:9200
       - 9300:9300
@@ -126,9 +124,9 @@ services:
     build: ./logging/logstash
     container_name: logstash
     volumes:
-      - ./logging/logstash/pipeline:/usr/share/logstash/pipeline
       - logstash-logs:/usr/share/logstash/logs
     restart: unless-stopped
+    env_file: .env
     networks: ["monitoring"]
     depends_on:
       - elasticsearch
@@ -137,15 +135,19 @@ services:
       - 5044:5044
 
   kibana:
-    build: ./logging/kibana
+    build:
+      context: ./logging/kibana
+      args:
+        KIBANA_SYSTEM_USERNAME: ${KIBANA_SYSTEM_USERNAME}
+        ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+        XPACK_SECURITY_ENCRYPTIONKEY: ${XPACK_SECURITY_ENCRYPTIONKEY}
+        XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY}
+        XPACK_REPORTING_ENCRYPTIONKEY: ${XPACK_REPORTING_ENCRYPTIONKEY}
     container_name: kibana
     volumes:
-      - ./logging/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
       - kibana-logs:/kibanalog/
     restart: unless-stopped
-    environment:
-      - ELASTICSEARCH_PASSWORD="changeme"
-      - ELASTIC_PASSWORD="changeme"
+    env_file: .env
     networks: ["monitoring"]
     depends_on:
       - elasticsearch
@@ -155,15 +157,12 @@ services:
     container_name: filebeat
     user: root
     volumes:
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
       - nginx-logs:/var/log/nginx:ro
       - django-logs:/djangologs:ro
       - es-logs:/usr/share/elasticsearch/logs:ro
       - logstash-logs:/usr/share/logstash/logs:ro
       - kibana-logs:/kibanalog:ro
       - grafana-logs:/grafana/data/log:ro
-      - ./logging/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
     restart: unless-stopped
     networks: ["monitoring"]
     depends_on:
@@ -185,3 +184,4 @@ volumes:
   logstash-logs:
   kibana-logs:
   grafana-logs:
+  elk-volume:
