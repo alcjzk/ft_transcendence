@@ -35,18 +35,6 @@ if [ ! -f /usr/share/elasticsearch/config/.initialized ]; then
 
     echo "Passwords have been set for Elasticsearch built-in users."
     touch /usr/share/elasticsearch/config/.initialized
-
-    # /usr/share/elasticsearch/bin/setup-passwords.exp
-    # EXPECT_EXIT_CODE=$?
-
-    # if [ $EXPECT_EXIT_CODE -eq 0 ]; then
-    #     echo "Passwords have been set for Elasticsearch built-in users."
-    #     touch /usr/share/elasticsearch/config/.initialized
-    # else
-    #     echo "Password setup failed with exit code $EXPECT_EXIT_CODE. Exiting..."
-    #     kill $ES_PID
-    #     exit 1
-    # fi
 else
     echo "Initialization already completed, skipping password setup."
 fi
