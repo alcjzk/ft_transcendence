@@ -21,4 +21,4 @@ else
 fi
 
 echo "Starting Kibana..."
-/usr/local/bin/kibana-docker
+exec /usr/local/bin/kibana-docker
