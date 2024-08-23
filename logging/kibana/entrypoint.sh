@@ -7,7 +7,7 @@ done
 
 echo "Successfully authenticated with Elasticsearch."
 
-if [ ! -f /usr/share/kibana/data/kibana.keystore ]; then
+if [ ! -f /usr/share/kibana/config/kibana.keystore ]; then
     echo "Creating Kibana keystore..."
     /usr/share/kibana/bin/kibana-keystore create
 fi
@@ -21,4 +21,4 @@ else
 fi
 
 echo "Starting Kibana..."
-exec /usr/local/bin/kibana-docker
+/usr/local/bin/kibana-docker
