@@ -8,6 +8,8 @@ const fetchProfile = async () => {
         if (!response.ok)
             return null;
         const profile = await response.json();
+        if (!profile.first_name)
+            return null;
         return profile;
     }
     catch {
