@@ -8,9 +8,14 @@ services:
     networks: 
       - transcendence
       - monitoring
+    volumes:
+      - nginx-logs:/var/log/nginx
     depends_on:
       - django
       - parcel
+      - elasticsearch
+      - kibana
+      - grafana
 
   django:
     image: django
@@ -19,6 +24,8 @@ services:
     restart: unless-stopped
     networks: ["transcendence"]
     env_file: .env
+    volumes:
+      - django-logs:/djangologs/
     depends_on:
       postgres:
         condition: service_healthy
@@ -57,10 +64,10 @@ services:
       dockerfile: ./monitoring/grafana/Dockerfile
     container_name: grafana
     env_file:
-      - .grafana_env
+      - .env
     volumes:
+      - grafana-logs:/grafana/data/log
       - grafana-storage:/var/lib/grafana
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
     depends_on:
       prometheus:
         condition: service_healthy
@@ -84,12 +91,84 @@ services:
       dockerfile: ./monitoring/alertmanager/Dockerfile
     container_name: alertmanager
     env_file:
-      - .alert_env
+      - .env
     depends_on:
       prometheus:
         condition: service_healthy
     restart: unless-stopped
     networks: ["monitoring"]
+
+  elasticsearch:
+    build: ./logging/elasticsearch
+    container_name: elasticsearch
+    env_file: .env
+    environment:
+      - ES_JAVA_OPTS=-Xmx256m -Xms256m
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - http.cors.allow-origin=*
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - es-logs:/usr/share/elasticsearch/logs
+    ports:
+      - 9200:9200
+      - 9300:9300
+    restart: unless-stopped
+    networks: ["monitoring"]
+
+  logstash:
+    build: ./logging/logstash
+    container_name: logstash
+    volumes:
+      - logstash-logs:/usr/share/logstash/logs
+    restart: unless-stopped
+    env_file: .env
+    networks: ["monitoring"]
+    depends_on:
+      - elasticsearch
+    ports:
+      - 9600:9600
+      - 5044:5044
+
+  kibana:
+    build:
+      context: ./logging/kibana
+      args:
+        KIBANA_SYSTEM_USERNAME: ${KIBANA_SYSTEM_USERNAME}
+        ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+        XPACK_SECURITY_ENCRYPTIONKEY: ${XPACK_SECURITY_ENCRYPTIONKEY}
+        XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY}
+        XPACK_REPORTING_ENCRYPTIONKEY: ${XPACK_REPORTING_ENCRYPTIONKEY}
+    container_name: kibana
+    volumes:
+      - kibana-logs:/kibanalog/
+    restart: unless-stopped
+    env_file: .env
+    networks: ["monitoring"]
+    depends_on:
+      - elasticsearch
+
+  filebeat:
+    build: ./logging/filebeat
+    container_name: filebeat
+    user: root
+    volumes:
+      - nginx-logs:/var/log/nginx:ro
+      - django-logs:/djangologs:ro
+      - es-logs:/usr/share/elasticsearch/logs:ro
+      - logstash-logs:/usr/share/logstash/logs:ro
+      - kibana-logs:/kibanalog:ro
+      - grafana-logs:/grafana/data/log:ro
+    restart: unless-stopped
+    networks: ["monitoring"]
+    depends_on:
+      - logstash
+    ports:
+      - 5601:5601
 
 networks:
   transcendence:
@@ -98,4 +177,11 @@ networks:
 volumes:
   grafana-storage:
   prometheus-storage:
-
+  esdata:
+  nginx-logs:
+  django-logs:
+  es-logs:
+  logstash-logs:
+  kibana-logs:
+  grafana-logs:
+  elk-volume:

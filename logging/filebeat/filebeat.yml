@@ -1,0 +1,37 @@
+name: filebeat
+
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/lib/docker/containers/*/*.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  processors:
+    - add_docker_metadata: ~
+
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/*.log
+    - /djangologs/*.log
+    - /usr/share/elasticsearch/logs/*.log
+    - /usr/share/logstash/logs/*.log
+    - /kibanalog/*.log
+    - /grafana/data/log/*.log
+
+processors:
+  - add_cloud_metadata: ~
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
+## HTTP endpoint for health checking
+http:
+  enabled: true
+  host: 0.0.0.0
