@@ -12,10 +12,10 @@ services:
       - nginx-logs:/var/log/nginx
     depends_on:
       - django
-      - parcel
       - elasticsearch
       - kibana
       - grafana
+#      - parcel
 
   django:
     image: django
@@ -30,12 +30,12 @@ services:
       postgres:
         condition: service_healthy
 
-  parcel:
-    image: parcel
-    container_name: parcel
-    build: parcel
-    restart: unless-stopped
-    networks: ["transcendence"]
+#  parcel:
+#    image: parcel
+#    container_name: parcel
+#    build: parcel
+#    restart: unless-stopped
+#    networks: ["transcendence"]
 
   postgres:
     image: postgres

@@ -1,5 +1,0 @@
-.parcel-cache
-dist
-node_modules
-.gitignore
-Dockerfile
