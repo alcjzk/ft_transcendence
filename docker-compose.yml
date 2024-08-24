@@ -3,8 +3,11 @@ services:
     image: nginx
     container_name: nginx
     build: nginx
-    ports: ["80:80"]
+    ports: ["443:443"]
     restart: unless-stopped
+    secrets:
+      - certificate.crt
+      - certificate.key
     networks: 
       - transcendence
       - monitoring
@@ -170,3 +173,9 @@ volumes:
   kibana-logs:
   grafana-logs:
   elk-volume:
+
+secrets:
+  certificate.crt:
+    file: certificate.crt
+  certificate.key:
+    file: certificate.key
