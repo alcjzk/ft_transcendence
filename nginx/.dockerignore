@@ -1,2 +1,7 @@
 .gitignore
+*/.gitignore
 Dockerfile
+*/.parcel-cache
+*/dist
+*/node_modules
+*/jsconfig.json

@@ -12,7 +12,6 @@ services:
       - nginx-logs:/var/log/nginx
     depends_on:
       - django
-      - parcel
       - elasticsearch
       - kibana
       - grafana
@@ -29,13 +28,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-
-  parcel:
-    image: parcel
-    container_name: parcel
-    build: parcel
-    restart: unless-stopped
-    networks: ["transcendence"]
 
   postgres:
     image: postgres
