@@ -18,7 +18,7 @@ def home(request: HttpRequest) -> HttpResponse:
 def profile(request: HttpRequest) -> HttpResponse:
     first_name = request.session.get('first_name')
     if not first_name:
-        return HttpResponse(status = 401)
+        return JsonResponse({'first_name': None})
     return JsonResponse({'first_name': first_name})
 
 def logout(request: HttpRequest) -> HttpResponse:

@@ -1,4 +1,4 @@
-import { setPage } from './util.js';
+import { DEFAULT_LANGUAGE, setPage } from './util.js';
 import TerminalPage from './TerminalPage.js';
 
 const template = document.createElement('template');
@@ -27,6 +27,8 @@ class LoginPage extends HTMLElement {
     }
 
     loginAsGuest() {
+        sessionStorage.setItem('first_name', 'Guest');
+        sessionStorage.setItem('language', DEFAULT_LANGUAGE);
         setPage(new TerminalPage());
     }
 
