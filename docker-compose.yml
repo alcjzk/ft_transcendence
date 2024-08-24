@@ -107,16 +107,13 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - http.cors.allow-origin=*
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - es-logs:/usr/share/elasticsearch/logs
-    # ports:
-    #   - 9200:9200
-    #   - 9300:9300
     restart: unless-stopped
     networks: ["monitoring"]
 
@@ -130,9 +127,6 @@ services:
     networks: ["monitoring"]
     depends_on:
       - elasticsearch
-    # ports:
-    #   - 9600:9600
-    #   - 5044:5044
 
   kibana:
     build:
@@ -167,8 +161,6 @@ services:
     networks: ["monitoring"]
     depends_on:
       - logstash
-    # ports:
-    #   - 5601:5601
 
 networks:
   transcendence:
