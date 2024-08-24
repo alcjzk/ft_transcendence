@@ -114,9 +114,9 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
       - es-logs:/usr/share/elasticsearch/logs
-    ports:
-      - 9200:9200
-      - 9300:9300
+    # ports:
+    #   - 9200:9200
+    #   - 9300:9300
     restart: unless-stopped
     networks: ["monitoring"]
 
@@ -130,9 +130,9 @@ services:
     networks: ["monitoring"]
     depends_on:
       - elasticsearch
-    ports:
-      - 9600:9600
-      - 5044:5044
+    # ports:
+    #   - 9600:9600
+    #   - 5044:5044
 
   kibana:
     build:
@@ -167,8 +167,8 @@ services:
     networks: ["monitoring"]
     depends_on:
       - logstash
-    ports:
-      - 5601:5601
+    # ports:
+    #   - 5601:5601
 
 networks:
   transcendence:
