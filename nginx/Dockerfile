@@ -19,4 +19,4 @@ COPY --from=0 /usr/src/app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/
 COPY conf/* /etc/nginx/conf.d/
 
-EXPOSE 80
+EXPOSE 443
