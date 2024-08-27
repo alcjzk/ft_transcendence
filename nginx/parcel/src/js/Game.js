@@ -2,6 +2,7 @@ import Player from './Player.js';
 import Ball from './Ball.js';
 import Banner from './Banner.js';
 import TerminalPage from './TerminalPage.js';
+import Theme from './Theme.js';
 import { setPage, localize } from './util.js';
 
 const template = document.createElement('template');
@@ -12,7 +13,6 @@ template.innerHTML = `
 
 class Game extends HTMLElement {
     static maxScore = 3;
-
     constructor(tournament) {
         super();
 
@@ -50,18 +50,17 @@ class Game extends HTMLElement {
                 y: this.canvas.height / 2,
             },
         });
-
     }
 
     draw(context) {
-        context.fillStyle = 'black';
+        context.fillStyle = Theme.bgcolor;
         context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         this.player1.draw(context);
         this.player2.draw(context);
         this.ball.draw(context);
 
-        context.fillStyle = 'yellow';
+        context.fillStyle = Theme.scorecolor;
         context.font = '40px Arial';
 
         context.textAlign = 'right';

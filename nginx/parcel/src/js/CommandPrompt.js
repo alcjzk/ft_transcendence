@@ -1,11 +1,29 @@
 import TournamentPrompt from './TournamentPrompt.js';
 import LoginPage from './LoginPage.js';
+import Theme from './Theme.js';
 import { isDigitString, setPage } from './util.js';
 
 const TOURNAMENT_PLAYERS_MIN = 2;
 const TOURNAMENT_PLAYERS_MAX = 5;
 
 const commands = {
+    chtheme: (commandPrompt, args) => {
+        const command = args.at(0);
+        const theme = args.at(1);
+        if (!['cursed', 'space', 'prussian'].includes(theme))
+        {
+            commandPrompt.terminal.printLocalized({
+                en: `Invalid theme selected. Options: cursed, space or prussian.\n`,
+                fi: `Virheellinen teema valittu. Vaihtoehdot: cursed, space tai prussian.\n`,
+            });
+            return;
+        }
+        Theme.set(theme);
+        commandPrompt.terminal.printLocalized({
+            en: `Theme selected: ${theme}.\n`,
+            fi: `Teema valittu: ${theme}.\n`,
+        });
+    },
     aboutus: commandPrompt => {
         commandPrompt.terminal.printLocalized({
             en: `Our team members are as follows:
@@ -27,7 +45,8 @@ const commands = {
                  Luis sileoni lsileoni, linh hồn nhà văn
                  Tuomas jääsalo tjaasalo
                  Michail karatzidis mkaratzi, bàn tay của tổ ong
-                 Jonni le jole\n`
+                 Jonni le jole\n`,
+          
         });
     },
     clear: commandPrompt => {
@@ -64,7 +83,8 @@ const commands = {
                  whoami - prints users username
                  clear - clears the terminal
                  chlang - change the language of the terminal
-                 logout - logs user out of the game\n`,
+                 logout - logs user out of the game
+                 chtheme - change game theme\n`,
 
             fi: `Tällä hetkellä tuemme seuraavia komentoja:
                  play - pelaa 1vs1 kaveria vastaan, vasemmanpuoleinen pelaaja käyttää 'w' ja 's' liikkuakseen ja oikeanpuoleinen pelaaja käyttää ylös- ja alasnuolia
@@ -75,18 +95,20 @@ const commands = {
                  whoami - tulostaa käyttäjän käyttäjätunnuksen
                  clear - terminaali-ikkunan tyhjennys
                  chlang - terminaalikielen vaihto
-                 logout - kirjaa käyttäjän ulos pelistä\n`,
+                 logout - kirjaa käyttäjän ulos pelistä
+                 chtheme - peliteeman vaihto\n`,
 
             vn: `Hiện tại, chúng tôi hỗ trợ các lệnh sau:
                  play - chơi 1vs1 với bạn bè, người chơi bên trái sử dụng phím 'w' và 's' để di chuyển, người chơi bên phải sử dụng phím mũi tên lên và xuống
-                 info - in thông tin liên quan đến dự án này, bao gồm các module đã thực hiện
-                 aboutus - in thông tin về các thành viên trong nhóm
-                 randomquote - in một câu trích dẫn ngẫu nhiên
-                 help - in hướng dẫn/trợ giúp cho người dùng
-                 whoami - in tên người dùng
+                 info - thông tin liên quan đến dự án này, bao gồm các module đã thực hiện
+                 aboutus - thông tin về các thành viên trong nhóm
+                 randomquote - một câu trích dẫn ngẫu nhiên
+                 help - hướng dẫn/trợ giúp cho người dùng
+                 whoami - tên người dùng
                  clear - xóa màn hình cửa sổ terminal
                  chlang - thay đổi ngôn ngữ của terminal
                  logout - đăng xuất người dùng khỏi trò chơ\n`,
+
         });
     },
     info: commandPrompt => {
@@ -94,23 +116,26 @@ const commands = {
             en: `Done modules:
                 Major module: Microservices
                 Major module: Elk stack
-                Major module: Advanced 3D with threejs
                 Major module: Use framework as backend: Django
                 Major module: Remote authentication
                 Minor module: Language support
                 Minor module: Database usage: Postgress
                 Minor module: Frontend framework: Bootstrap
-                Minor module: Monitoring system: Grafana\n`,
+                Minor module: Monitoring system: Grafana
+                Minor module: Browser support
+                Minor module: Customization\n`,
+          
             fi: `Tehdyt moduulit:
                 Major module: Microservices
                 Major module: Elk stack
-                Major module: Advanced 3D with threejs
                 Major module: Use framework as backend: Django
                 Major module: Remote authentication
                 Minor module: Language support
                 Minor module: Database usage: Postgress
                 Minor module: Frontend framework: Bootstrap
-                Minor module: Monitoring system: Grafana\n`,
+                Minor module: Monitoring system: Grafana
+                Minor module: Browser support
+                Minor module: Customization\n`,
 
             vn: `Các module đã thực hiện:
                 Module chính: Microservices
@@ -122,6 +147,7 @@ const commands = {
                 Module phụ: Sử dụng cơ sở dữ liệu: Postgress
                 Module phụ: Framework frontend: Bootstrap
                 Module phụ: Hệ thống giám sát: Grafana\n`
+
         });
     },
     chlang: (commandPrompt, args) => {
