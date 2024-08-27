@@ -1,24 +1,42 @@
 import TournamentPrompt from './TournamentPrompt.js';
 import LoginPage from './LoginPage.js';
+import Theme from './Theme.js';
 import { isDigitString, setPage } from './util.js';
 
 const TOURNAMENT_PLAYERS_MIN = 2;
 const TOURNAMENT_PLAYERS_MAX = 5;
 
 const commands = {
+    chtheme: (commandPrompt, args) => {
+        const command = args.at(0);
+        const theme = args.at(1);
+        if (!['cursed', 'space', 'prussian'].includes(theme))
+        {
+            commandPrompt.terminal.printLocalized({
+                en: `Invalid theme selected. Options: cursed, space or prussian.\n`,
+                fi: `Virheellinen teema valittu. Vaihtoehdot: cursed, space tai prussian.\n`,
+            });
+            return;
+        }
+        Theme.set(theme);
+        commandPrompt.terminal.printLocalized({
+            en: `Theme selected: ${theme}.\n`,
+            fi: `Teema valittu: ${theme}.\n`,
+        });
+    },
     aboutus: commandPrompt => {
         commandPrompt.terminal.printLocalized({
             en: `Our team members are as follows:
-                 Dean ruina druina, writer's soul
-                 Luis sileoni lsileoni, writer's soul
-                 Tuomas jääsalo tjaasalo
-                 Michail karatzidis mkaratzi, hand of hive\n`,
+                 Dean Ruina druina, writer's soul
+                 Luis Sileoni lsileoni, writer's soul
+                 Tuomas Jääsalo tjaasalo
+                 Michail Karatzidis mkaratzi, hand of hive\n`,
                  
             fi: `Tiimimme jäsenet ovat seuraavat:
-                 Dean ruina druina, writer's soul
-                 Luis sileoni lsileoni, writer's soul
-                 Tuomas jääsalo tjaasalo
-                 Michail karatzidis mkaratzi, hand of hive`
+                 Dean Ruina druina, writer's soul
+                 Luis Sileoni lsileoni, writer's soul
+                 Tuomas Jääsalo tjaasalo
+                 Michail Karatzidis mkaratzi, hand of hive`
         });
     },
     clear: commandPrompt => {
@@ -51,7 +69,8 @@ const commands = {
                  whoami - prints users username
                  clear - clears the terminal
                  chlang - change the language of the terminal
-                 logout - logs user out of the game\n`,
+                 logout - logs user out of the game
+                 chtheme - change game theme\n`,
 
             fi: `Tällä hetkellä tuemme seuraavia komentoja:
                  play - pelaa 1vs1 kaveria vastaan, vasemmanpuoleinen pelaaja käyttää 'w' ja 's' liikkuakseen ja oikeanpuoleinen pelaaja käyttää ylös- ja alasnuolia
@@ -62,7 +81,8 @@ const commands = {
                  whoami - tulostaa käyttäjän käyttäjätunnuksen
                  clear - terminaali-ikkunan tyhjennys
                  chlang - terminaalikielen vaihto
-                 logout - kirjaa käyttäjän ulos pelistä\n`,
+                 logout - kirjaa käyttäjän ulos pelistä
+                 chtheme - peliteeman vaihto\n`,
         });
     },
     info: commandPrompt => {
@@ -70,23 +90,25 @@ const commands = {
             en: `Done modules:
                 Major module: Microservices
                 Major module: Elk stack
-                Major module: Advanced 3D with threejs
                 Major module: Use framework as backend: Django
                 Major module: Remote authentication
                 Minor module: Language support
                 Minor module: Database usage: Postgress
                 Minor module: Frontend framework: Bootstrap
-                Minor module: Monitoring system: Grafana\n`,
+                Minor module: Monitoring system: Grafana
+                Minor module: Browser support
+                Minor module: Customization\n`,
             fi: `Tehdyt moduulit:
                 Major module: Microservices
                 Major module: Elk stack
-                Major module: Advanced 3D with threejs
                 Major module: Use framework as backend: Django
                 Major module: Remote authentication
                 Minor module: Language support
                 Minor module: Database usage: Postgress
                 Minor module: Frontend framework: Bootstrap
-                Minor module: Monitoring system: Grafana\n`
+                Minor module: Monitoring system: Grafana
+                Minor module: Browser support
+                Minor module: Customization\n`
         });
     },
     chlang: (commandPrompt, args) => {
