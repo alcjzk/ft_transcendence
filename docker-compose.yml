@@ -3,7 +3,7 @@ services:
     image: nginx
     container_name: nginx
     build: nginx
-    ports: ["8443:443"]
+    ports: ["4343:4343"]
     restart: unless-stopped
     secrets:
       - certificate.crt
