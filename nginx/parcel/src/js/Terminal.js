@@ -52,6 +52,7 @@ class Terminal extends HTMLElement {
     
     print(text) {
         this.output.innerText += `${text}\n`;
+        this.output.scrollTop = this.output.scrollHeight;
     }
 
     clear() {

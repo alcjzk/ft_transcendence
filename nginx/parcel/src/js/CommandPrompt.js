@@ -237,7 +237,6 @@ class CommandPrompt {
             })
         }
         this.historyIndex = CommandPrompt.history.length - 1;
-        this.terminal.output.scrollTop = this.terminal.output.scrollHeight;
     }
 
     historyAdd(value) {
