@@ -12,13 +12,22 @@ const commands = {
                  Dean ruina druina, writer's soul
                  Luis sileoni lsileoni, writer's soul
                  Tuomas jääsalo tjaasalo
-                 Michail karatzidis mkaratzi, hand of hive\n`,
+                 Michail karatzidis mkaratzi, hand of hive
+                 Jonni le jole\n`,
                  
             fi: `Tiimimme jäsenet ovat seuraavat:
                  Dean ruina druina, writer's soul
                  Luis sileoni lsileoni, writer's soul
                  Tuomas jääsalo tjaasalo
-                 Michail karatzidis mkaratzi, hand of hive`
+                 Michail karatzidis mkaratzi, hand of hive
+                 Jonni le jole\n`,
+
+            vn: `Các thành viên trong nhóm của chúng tôi bao gồm:
+                 Dean ruina druina, linh hồn nhà văn
+                 Luis sileoni lsileoni, linh hồn nhà văn
+                 Tuomas jääsalo tjaasalo
+                 Michail karatzidis mkaratzi, bàn tay của tổ ong
+                 Jonni le jole\n`
         });
     },
     clear: commandPrompt => {
@@ -28,6 +37,7 @@ const commands = {
         commandPrompt.terminal.printLocalized({
             en: `insanity is doing the same thing over and over expecting different results!\n`,
             fi: `hulluus on sitä, että tekee saman asian uudestaan ja uudestaan odottaen eri tuloksia!\n`,
+            vn: `Điên rồ là làm cùng một việc lặp đi lặp lại và mong đợi kết quả khác biệt!\n`,
         });
     },
     whoami: commandPrompt => {
@@ -38,6 +48,9 @@ const commands = {
 
             fi: `Miten tarkalleen ottaen unohdit kuka olet....
                  Klassinen ${name} hetki...\n`,
+
+            vn: `Làm thế nào mà bạn lại quên chính xác mình là ai...
+                 Khoảnh khắc thật là ${name} kinh điển...\n`,
         });
     },
     help: commandPrompt => {
@@ -63,6 +76,17 @@ const commands = {
                  clear - terminaali-ikkunan tyhjennys
                  chlang - terminaalikielen vaihto
                  logout - kirjaa käyttäjän ulos pelistä\n`,
+
+            vn: `Hiện tại, chúng tôi hỗ trợ các lệnh sau:
+                 play - chơi 1vs1 với bạn bè, người chơi bên trái sử dụng phím 'w' và 's' để di chuyển, người chơi bên phải sử dụng phím mũi tên lên và xuống
+                 info - in thông tin liên quan đến dự án này, bao gồm các module đã thực hiện
+                 aboutus - in thông tin về các thành viên trong nhóm
+                 randomquote - in một câu trích dẫn ngẫu nhiên
+                 help - in hướng dẫn/trợ giúp cho người dùng
+                 whoami - in tên người dùng
+                 clear - xóa màn hình cửa sổ terminal
+                 chlang - thay đổi ngôn ngữ của terminal
+                 logout - đăng xuất người dùng khỏi trò chơ\n`,
         });
     },
     info: commandPrompt => {
@@ -86,7 +110,18 @@ const commands = {
                 Minor module: Language support
                 Minor module: Database usage: Postgress
                 Minor module: Frontend framework: Bootstrap
-                Minor module: Monitoring system: Grafana\n`
+                Minor module: Monitoring system: Grafana\n`,
+
+            vn: `Các module đã thực hiện:
+                Module chính: Microservices
+                Module chính: Elk stack
+                Module chính: 3D nâng cao với threejs
+                Module chính: Sử dụng framework làm backend: Django
+                Module chính: Xác thực từ xa
+                Module phụ: Hỗ trợ ngôn ngữ
+                Module phụ: Sử dụng cơ sở dữ liệu: Postgress
+                Module phụ: Framework frontend: Bootstrap
+                Module phụ: Hệ thống giám sát: Grafana\n`
         });
     },
     chlang: (commandPrompt, args) => {
@@ -95,8 +130,9 @@ const commands = {
         if (!['en', 'fi'].includes(language))
         {
             commandPrompt.terminal.printLocalized({
-                en: `Invalid language selected. Use "${command} fi" for Finnish or "${command} en" for English.\n`,
-                fi: `Virheellinen kieli valittu. Käytä "${command} fi" suomeksi tai "${command} en" englanniksi.\n`,
+                en: `Invalid language selected. Use "${command} fi" for Finnish or "${command} en" for English or "${command} vn" for Vietnamese.\n`,
+                fi: `Virheellinen kieli valittu. Käytä "${command} fi" suomeksi tai "${command} en" englanniksi tai "${command} vn" vietnamiksi.\n`,
+                vn: `Ngôn ngữ không hợp lệ được chọn. Sử dụng "${command} fi" cho tiếng Phần Lan hoặc "${command} en" cho tiếng Anh" cho tiếng Việt hoặc "${command} vn" .\n`,
             });
             return;
         }
@@ -104,6 +140,7 @@ const commands = {
         commandPrompt.terminal.printLocalized({
             en: `Language set to English.\n`,
             fi: `Kieli asetettu suomeksi.\n`,
+            vn: `Ngôn ngữ đã được đặt thành tiếng Việt.\n`,
         });
     },
     tournament: (commandPrompt, args) => {
@@ -121,6 +158,7 @@ const commands = {
             commandPrompt.terminal.printLocalized({
                 en: `Invalid tournament. Use "tournament <number_of_players>".\n`,
                 fi: `Virheellinen turnaus. Käytä "tournament <pelaajien_määrä>".\n`,
+                vn: `Giải đấu không hợp lệ. Sử dụng "tournament <số_lượng_người_chơi>".\n`,
             });
         }
         else
@@ -164,7 +202,9 @@ class CommandPrompt {
                 en: `Sorry we do not support this command: ${command}
                 Use the command \`help\` to find the commands we support.\n`,
                 fi: `Pahoittelut, emme tue kommentoa: ${command}
-                Saat listan tuetuista kommennoista \`help\` kommennolla.\n`
+                Saat listan tuetuista kommennoista \`help\` kommennolla.\n`,
+                vn: `Xin lỗi, chúng tôi không hỗ trợ lệnh: ${command}
+                Bạn có thể xem danh sách các lệnh được hỗ trợ bằng lệnh \`help\`.\n`
             })
         }
         this.historyIndex = CommandPrompt.history.length - 1;

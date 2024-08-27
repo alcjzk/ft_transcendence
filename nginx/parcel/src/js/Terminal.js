@@ -24,7 +24,9 @@ class Terminal extends HTMLElement {
             en: `Welcome to Pongers. Our super duper trancendence project.
         Please use the command \`help\` to see instructions on how to use our terminal!\n\n`,
             fi: `Tervetuloa Pongersiin. Super duper trancedence -projektimme.
-        Käytä komentoa \`help\` nähdäksesi ohjeet terminaalimme käyttöön!\n\n`
+        Käytä komentoa \`help\` nähdäksesi ohjeet terminaalimme käyttöön!\n\n`,
+            vn: `Chào mừng bạn đến với Pongers. Dự án siêu tuyệt vời của chúng tôi.
+            Sử dụng lệnh \`help\` để xem hướng dẫn sử dụng terminal của chúng tôi!\n\n`
         });
         this.prompt = new CommandPrompt(this);
     }
