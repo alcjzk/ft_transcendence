@@ -15,6 +15,7 @@ const commands = {
             commandPrompt.terminal.printLocalized({
                 en: `Invalid theme selected. Options: cursed, space or prussian.\n`,
                 fi: `Virheellinen teema valittu. Vaihtoehdot: cursed, space tai prussian.\n`,
+                vn: `Chủ đề không hợp lệ. Các tùy chọn: cursed, space hay la prussian.\n`,
             });
             return;
         }
@@ -22,6 +23,7 @@ const commands = {
         commandPrompt.terminal.printLocalized({
             en: `Theme selected: ${theme}.\n`,
             fi: `Teema valittu: ${theme}.\n`,
+            vn: `Chủ đề đã chọn: ${theme}.\n`,
         });
     },
     aboutus: commandPrompt => {
@@ -138,22 +140,23 @@ const commands = {
                 Minor module: Customization\n`,
 
             vn: `Các module đã thực hiện:
-                Module chính: Microservices
-                Module chính: Elk stack
-                Module chính: 3D nâng cao với threejs
-                Module chính: Sử dụng framework làm backend: Django
-                Module chính: Xác thực từ xa
-                Module phụ: Hỗ trợ ngôn ngữ
-                Module phụ: Sử dụng cơ sở dữ liệu: Postgress
-                Module phụ: Framework frontend: Bootstrap
-                Module phụ: Hệ thống giám sát: Grafana\n`
+                Major module: Microservices
+                Major module: Elk stack
+                Major module: Use framework as backend: Django
+                Major module: Remote authentication
+                Minor module: Language support
+                Minor module: Database usage: Postgress
+                Minor module: Frontend framework: Bootstrap
+                Minor module: Monitoring system: Grafana
+                Minor module: Browser support
+                Minor module: Customization\n`,
 
         });
     },
     chlang: (commandPrompt, args) => {
         const command = args.at(0);
         const language = args.at(1);
-        if (!['en', 'fi'].includes(language))
+        if (!['en', 'fi', 'vn'].includes(language))
         {
             commandPrompt.terminal.printLocalized({
                 en: `Invalid language selected. Use "${command} fi" for Finnish or "${command} en" for English or "${command} vn" for Vietnamese.\n`,
