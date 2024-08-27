@@ -16,6 +16,7 @@ class TournamentPrompt {
         this.terminal.printLocalized({
             en: `Enter names for the remaining ${this.remainingPlayers} players:`,
             fi: `Syötä jäljellä olevien ${this.remainingPlayers} pelaajan nimet:`,
+            vn: `Nhập tên của ${this.remainingPlayers} người chơi còn lại:`,
         });
     }
 
@@ -29,12 +30,14 @@ class TournamentPrompt {
                 this.terminal.printLocalized({
                     en: `Player with the name ${player} is already registered.`,
                     fi: `Pelaaja ${player} on jo rekisteröity.`,
+                    vn: `Người chơi ${player} đã được đăng ký rồi.`,
                 });
             return ;
         }
         this.terminal.printLocalized({
             en: `Player registered: ${value}`,
             fi: `Pelaaja rekisteröity: ${value}`,
+            vn: `Người chơi đã được đăng ký: ${value}`,
         });
 
         this.terminal.input.value = '';

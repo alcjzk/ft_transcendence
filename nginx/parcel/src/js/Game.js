@@ -182,6 +182,7 @@ class Game extends HTMLElement {
             text: localize({
                 en: `Prepare for the match! Right side ${this.tournament.players[0]} vs ${this.tournament.players[1]} left side. Press ENTER KEY when ready.\n`,
                 fi: `Valmistaudu otteluun! Oikealla ${this.tournament.players[0]} vs ${this.tournament.players[1]} vasemmalla. Paina ENTER-näppäintä, kun olet valmis.\n`,
+                vn: `Chuẩn bị cho trận đấu! Ở bên phải ${this.tournament.players[0]} vs ${this.tournament.players[1]} ở bên trái. Nhấn phím ENTER khi bạn đã sẵn sàng.\n`,
             }),
             onContinue: () => {
                 setPage(this);
@@ -194,6 +195,7 @@ class Game extends HTMLElement {
             text: localize({
                 en: `${winner} IS THE BIG TIME WINNER!\n Make sure to congratulate the winner!\nPress ENTER KEY to continue...\n`,
                 fi: `${winner} ON SUURI VOITTAJA!\n Muista onnitella voittajaa!\nPaina ENTER-näppäintä jatkaaksesi...\n`,
+                vn: `${winner} LÀ NGƯỜI THẮNG LỚN! Nhớ chúc mừng người chiến thắng! Nhấn phím ENTER để tiếp tục...\n`,
             }),
             onContinue: onContinue,
         }));
@@ -210,6 +212,7 @@ class Game extends HTMLElement {
                         text: localize({
                             en: `Playtime is over!\n Press ENTER KEY to exit game mode...\n`,
                             fi: `Peliaika on päättynyt!\n Paina ENTER-näppäintä poistuaksesi pelitilasta...\n`,
+                            vn: `Thời gian chơi đã kết thúc!\n Nhấn phím ENTER để thoát khỏi trạng thái trò chơi...\n`,
                         }),
                         onContinue: () => {
                             setPage(new TerminalPage());
