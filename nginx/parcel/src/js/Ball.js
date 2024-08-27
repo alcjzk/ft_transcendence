@@ -1,7 +1,8 @@
+import Theme from './Theme.js';
+
 class Ball {
     static size = 10;
     static speed = {x: .5, y: .5};
-    static color = 'blue';
 
     constructor({position, canvas}) {
         this.position = position;
@@ -10,7 +11,7 @@ class Ball {
     }
 
     draw(context) {
-        context.fillStyle = Ball.color;
+        context.fillStyle = Theme.ballcolor;
         context.fillRect(this.position.x - Ball.size / 2, this.position.y - Ball.size / 2, Ball.size, Ball.size);
     }
 
