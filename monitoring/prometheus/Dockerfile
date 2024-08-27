@@ -15,6 +15,6 @@ RUN ls -l /prometheus
 
 EXPOSE 9090
 
-HEALTHCHECK --interval=1s --timeout=10s --start-period=30s --retries=3 CMD wget --spider --quiet http://localhost:9090/-/healthy || exit 1
+HEALTHCHECK --interval=1s --timeout=10s --start-period=30s --retries=30 CMD wget --spider --quiet http://localhost:9090/-/healthy || exit 1
 
 CMD ["/prometheus/prometheus", "--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=30d"]
