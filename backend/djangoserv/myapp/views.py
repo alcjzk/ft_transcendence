@@ -32,53 +32,59 @@ def initiate_oauth(request: HttpRequest) -> HttpResponseRedirect:
     return redirect(auth_url)
 
 def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
-    if request.method == 'GET':
-        code = request.GET.get('code')
-        if not code or not code.isalnum():
-            return HttpResponseRedirect(reverse('error'), status=400)
-        state = request.GET.get('state')
-        if state is None or not state.isalnum():
-            return HttpResponseRedirect(reverse('error'), status=400)
-        # Retrieve & compare state and session state
-        stored_state = request.session.get('oauth_state')
-        if state != stored_state:
-            return HttpResponseRedirect(reverse('error'), status=400)
-        del request.session['oauth_state']
-        # Exchange access token
-        data = {
-            'grant_type': 'authorization_code',
-            'client_id': CLIENT_ID,
-            'client_secret': CLIENT_SECRET,
-            'code': code,
-            'redirect_uri': REDIRECT_URI
-        }
-        response = requests.post(url ="https://api.intra.42.fr/oauth/token", data=data)
-        if response.status_code == 200:
-            access_token = response.json().get('access_token')
-            if not access_token:
-                return HttpResponseRedirect(reverse('error'), status=401)
-            headers = {"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
-            response = requests.get(url="https://api.intra.42.fr/v2/me", headers=headers)
-            if response.status_code == 200:
-                user_data = response.json()
-                usr1 = {
-                    'id': user_data.get('id'),
-                    'login': user_data.get('login'),
-                    'full_name': user_data.get('usual_full_name'),
-                }
-                print(usr1)
-                request.session['first_name'] = user_data.get('first_name');
-                request.session['user_login'] = usr1['login']
-                request.session['campus'] = user_data.get('campus')[0].get('name')
-                campus_id = user_data.get('campus')[0].get('id')
-                response = requests.get(url=f"https://api.intra.42.fr/v2/campus/{campus_id}/users", headers=headers)
-                data = response.json()
-                users = [{'id': data['id'], 'login': data['login'], 'full_name':data['usual_full_name']} for data in data]
-                request.session['users'] = users
-                return HttpResponseRedirect('/')
-        return HttpResponseRedirect(reverse('error'), status=401)
-    else:
-        return HttpResponseRedirect(reverse('error'), status=401)
+    if request.method != 'GET':
+        return HttpResponseRedirect('/?error=1')
+        
+    code = request.GET.get('code')
+    if not code or not code.isalnum():
+        return HttpResponseRedirect('/?error=1')
+
+    state = request.GET.get('state')
+    if state is None or not state.isalnum():
+        return HttpResponseRedirect('/?error=1')
+
+    # Retrieve & compare state and session state
+    stored_state = request.session.get('oauth_state')
+    if state != stored_state:
+        return HttpResponseRedirect('/?error=1')
+    del request.session['oauth_state']
+    # Exchange access token
+    data = {
+        'grant_type': 'authorization_code',
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'code': code,
+        'redirect_uri': REDIRECT_URI
+    }
+    response = requests.post(url ="https://api.intra.42.fr/oauth/token", data=data)
+
+    if response.status_code != 200:
+        return HttpResponseRedirect('/?error=1')
+
+    access_token = response.json().get('access_token')
+    if not access_token:
+        return HttpResponseRedirect('/?error=1')
+
+    headers = {"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
+    response = requests.get(url="https://api.intra.42.fr/v2/me", headers=headers)
+    if response.status_code != 200:
+        return HttpResponseRedirect('/?error=1')
+
+    user_data = response.json()
+    usr1 = {
+        'id': user_data.get('id'),
+        'login': user_data.get('login'),
+        'full_name': user_data.get('usual_full_name'),
+    }
+    request.session['first_name'] = user_data.get('first_name');
+    request.session['user_login'] = usr1['login']
+    request.session['campus'] = user_data.get('campus')[0].get('name')
+    campus_id = user_data.get('campus')[0].get('id')
+    response = requests.get(url=f"https://api.intra.42.fr/v2/campus/{campus_id}/users", headers=headers)
+    data = response.json()
+    users = [{'id': data['id'], 'login': data['login'], 'full_name':data['usual_full_name']} for data in data]
+    request.session['users'] = users
+    return HttpResponseRedirect('/')
 
 def post_oauth(request):
     return render(request, 'post_oauth.html')
