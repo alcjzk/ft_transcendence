@@ -3,7 +3,7 @@ services:
     image: nginx
     container_name: nginx
     build: nginx
-    ports: ["443:443"]
+    ports: ["8443:443"]
     restart: unless-stopped
     secrets:
       - certificate.crt
@@ -43,6 +43,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 1s
+      retries: 60
 
   prometheus:
     build:

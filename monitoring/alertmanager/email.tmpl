@@ -1,0 +1,81 @@
+{{ define "email.default.html" }}
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      color: #333;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+    h1 {
+      color: #3b040d;
+    }
+    h2 {
+      color: #b52b2b;
+    }
+    p, li {
+      line-height: 1.5;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .alert-details {
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+    .footer {
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<h1>{{ .CommonAnnotations.summary }}</h1>
+<p>{{ .CommonAnnotations.description }}</p>
+
+{{ if .Alerts }}
+  {{ range .Alerts }}
+    <div class="alert-details">
+      <h2>Alert: {{ .Labels.alertname }}</h2>
+      <p><strong>Severity:</strong> {{ .Labels.severity }}</p>
+      {{ if .StartsAt }}
+        <p><strong>Start Time:</strong> {{ .StartsAt }}</p>
+      {{ else }}
+        <p><strong>Start Time:</strong> Not available</p>
+      {{ end }}
+      
+      {{ if .EndsAt.IsZero }}
+        <p><strong>End Time:</strong> Alert is still active</p>
+      {{ else }}
+        <p><strong>End Time:</strong> {{ .EndsAt }}</p>
+      {{ end }}
+
+      <p><strong>Labels:</strong></p>
+      <ul>
+      {{ range $label, $value := .Labels }}
+        <li>{{ $label }}: {{ $value }}</li>
+      {{ end }}
+      </ul>
+
+      <p><strong>Annotations:</strong></p>
+      <ul>
+      {{ range $annotation, $value := .Annotations }}
+        <li>{{ $annotation }}: {{ $value }}</li>
+      {{ end }}
+      </ul>
+    </div>
+  {{ end }}
+{{ else }}
+  <p>No alerts found.</p>
+{{ end }}
+
+<p class="footer">This is an automated message from Alertmanager.</p>
+
+</body>
+</html>
+{{ end }}
