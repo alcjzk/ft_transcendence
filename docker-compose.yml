@@ -3,7 +3,7 @@ services:
     image: nginx
     container_name: nginx
     build: nginx
-    ports: ["8443:443"]
+    ports: ["4343:4343"]
     restart: unless-stopped
     secrets:
       - certificate.crt
@@ -14,10 +14,14 @@ services:
     volumes:
       - nginx-logs:/var/log/nginx
     depends_on:
-      - django
-      - elasticsearch
-      - kibana
-      - grafana
+      elasticsearch:
+        condition: service_started
+      kibana:
+        condition: service_started
+      grafana:
+        condition: service_started
+      django:
+        condition: service_healthy
 
   django:
     image: django
@@ -27,10 +31,14 @@ services:
     networks: ["transcendence"]
     env_file: .env
     volumes:
-      - django-logs:/djangologs/
+      - django-logs:/usr/src/app/log
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: wget --spider --quiet http://django:8010/auth/healthy || exit  1
+      interval: 2s
+      retries: 60
 
   postgres:
     image: postgres
@@ -42,7 +50,7 @@ services:
     shm_size: 128mb
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 1s
+      interval: 2s
       retries: 60
 
   prometheus:

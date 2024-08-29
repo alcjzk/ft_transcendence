@@ -1,4 +1,5 @@
 import { DEFAULT_LANGUAGE, setPage } from './util.js';
+import Alert from './Alert.js';
 import TerminalPage from './TerminalPage.js';
 
 const template = document.createElement('template');
@@ -19,6 +20,9 @@ class LoginPage extends HTMLElement {
             loginOauth: this.querySelector('#login-oauth'),
             loginAsGuest: this.querySelector('#login-guest'),
         };
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('error'))
+            this.querySelector('#login-container').appendChild(new Alert());
     }
 
     connectedCallback() {
