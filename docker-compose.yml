@@ -18,6 +18,7 @@ services:
       - elasticsearch
       - kibana
       - grafana
+#      - parcel
 
   django:
     image: django
