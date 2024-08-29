@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# /usr/share/kibana/wait_kibana.sh &
-# disown
+/usr/share/kibana/wait_kibana.sh &
+disown
 
 until curl -s -u kibana_system:$ELASTIC_PASSWORD http://elasticsearch:9200 > /dev/null; do
     echo "Waiting for Elasticsearch to be up and accessible..."

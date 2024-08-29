@@ -17,6 +17,9 @@ COPY kibana.yml /usr/share/kibana/config/kibana.yml
 
 USER root
 
+RUN apt-get update &&\
+    apt-get install -y jq
+
 RUN mkdir -p /kibanalog && \
     chown -R kibana:kibana /kibanalog && \
     chmod -R 755 /kibanalog
@@ -28,6 +31,8 @@ RUN chmod +x /usr/share/kibana/setup-config.sh
 RUN /usr/share/kibana/setup-config.sh
 COPY wait_kibana.sh /usr/share/kibana/wait_kibana.sh
 RUN chmod +x /usr/share/kibana/wait_kibana.sh
+COPY elkconf.json /usr/share/kibana/elkconf.json
+RUN jq -c '.[]' /usr/share/kibana/elkconf.json > /usr/share/kibana/export.ndjson
 
 USER kibana
 
