@@ -7,6 +7,7 @@ RUN apk add --no-cache wget \
     && rm alertmanager-0.27.0.linux-amd64.tar.gz
 
 COPY ./monitoring/alertmanager/alertmanager.yml /etc/alertmanager/alertmanager.yml
+COPY ./monitoring/alertmanager/email.tmpl /etc/alertmanager/email.tmpl
 COPY ./monitoring/alertmanager/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 

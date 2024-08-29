@@ -1,16 +1,63 @@
 global:
   resolve_timeout: 1m
+  smtp_smarthost: '__SMTP_HOST__'
+  smtp_from: '__SMTP_SENDER__'
+  smtp_auth_username: '__SMTP_SENDER__'
+  smtp_auth_password: '__SMTP_PASSWORD__'
+  smtp_require_tls: true
 
 route:
   receiver: 'email-notifications'
+  routes:
+    
+    - match:
+        alertname: InstanceDown
+      receiver: 'email-instance-alerts'
+
+    - match:
+        alertname: HighCPUUsage
+      receiver: 'email-cpu-alerts'
+
+    - match:
+        alertname: HighMemoryUsage
+      receiver: 'email-memory-alerts'
+
+    - match:
+        alertname: LowDiskSpace
+      receiver: 'email-disk-alerts'
 
 receivers:
   - name: 'email-notifications'
     email_configs:
       - to: '__SMTP_RECEIVER__'
-        from: '__SMTP_SENDER__'
-        smarthost: '__SMTP_HOST__'
-        auth_username: '__SMTP_SENDER__'
-        auth_password: '__SMTP_PASSWORD__'
-        auth_identity: '__SMTP_SENDER__'
-        require_tls: true
+
+  - name: 'email-instance-alerts'
+    email_configs:
+      - to: '__SMTP_RECEIVER__'
+        headers:
+          subject: 'Instance Down Alert'
+        html: '{{ template "email.default.html" . }}'
+
+  - name: 'email-cpu-alerts'
+    email_configs:
+      - to: '__SMTP_RECEIVER__'
+        headers:
+          subject: 'High CPU Usage Alert'
+        html: '{{ template "email.default.html" . }}'
+
+  - name: 'email-memory-alerts'
+    email_configs:
+      - to: '__SMTP_RECEIVER__'
+        headers:
+          subject: 'High Memory Usage Alert'
+        html: '{{ template "email.default.html" . }}'
+
+  - name: 'email-disk-alerts'
+    email_configs:
+      - to: '__SMTP_RECEIVER__'
+        headers:
+          subject: 'Low Disk Space Alert'
+        html: '{{ template "email.default.html" . }}'
+
+templates:
+  - '/etc/alertmanager/email.tmpl'
