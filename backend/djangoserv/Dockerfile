@@ -7,6 +7,4 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
-ENV USE_POSTGRES="1"
-
 ENTRYPOINT ["sh", "entrypoint.sh"]

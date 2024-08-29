@@ -12,6 +12,9 @@ CLIENT_ID = os.getenv('42_CLIENT_ID')
 REDIRECT_URI = os.getenv('42_REDIRECT_URI')
 CLIENT_SECRET = os.getenv('42_CLIENT_SECRET')
 
+def healthy(request: HttpRequest) -> HttpResponse:
+    return HttpResponse(status=200)
+
 def home(request: HttpRequest) -> HttpResponse:
     return render(request, 'home.html')
 

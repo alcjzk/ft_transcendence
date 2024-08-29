@@ -14,10 +14,14 @@ services:
     volumes:
       - nginx-logs:/var/log/nginx
     depends_on:
-      - django
-      - elasticsearch
-      - kibana
-      - grafana
+      elasticsearch:
+        condition: service_started
+      kibana:
+        condition: service_started
+      grafana:
+        condition: service_started
+      django:
+        condition: service_healthy
 
   django:
     image: django
@@ -31,6 +35,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    healthcheck:
+      test: wget --spider --quiet http://django:8010/auth/healthy || exit  1
+      interval: 2s
+      retries: 60
 
   postgres:
     image: postgres
