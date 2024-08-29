@@ -26,6 +26,8 @@ RUN chmod +x /usr/share/kibana/entrypoint.sh
 COPY setup-config.sh /usr/share/kibana/setup-config.sh
 RUN chmod +x /usr/share/kibana/setup-config.sh
 RUN /usr/share/kibana/setup-config.sh
+COPY wait_kibana.sh /usr/share/kibana/wait_kibana.sh
+RUN chmod +x /usr/share/kibana/wait_kibana.sh
 
 USER kibana
 
