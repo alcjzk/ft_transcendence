@@ -45,6 +45,54 @@ import_kibana_objects() {
     fi
 }
 
+create_ilm_policy() {
+    local response=$(curl -s -u elastic:$ELASTIC_PASSWORD -X PUT \
+        "http://elasticsearch:9200/_ilm/policy/elk-logs-retention-policy" \
+        -H "Content-Type: application/json" \
+        -d '{
+            "policy": {
+                "phases": {
+                    "hot": {
+                        "actions": {
+                            "rollover": {
+                                "max_age": "30d"
+                            }
+                        }
+                    },
+                    "delete": {
+                        "min_age": "30d",
+                        "actions": {
+                            "delete": {}
+                        }
+                    }
+                }
+            }
+        }')
+    if echo "$response" | grep -q '"acknowledged":true'; then
+        echo "ILM policy created or updated successfully."
+    else
+        echo "Failed to create or update ILM policy. Response: $response"
+    fi
+}
+
+apply_ilm_policy_to_index() {
+    local response=$(curl -s -u elastic:$ELASTIC_PASSWORD -X PUT \
+        "http://elasticsearch:9200/elk-logs-*/_settings" \
+        -H "Content-Type: application/json" \
+        -d '{
+            "index": {
+                "lifecycle": {
+                    "name": "elk-logs-retention-policy"
+                }
+            }
+        }')
+    if echo "$response" | grep -q '"acknowledged":true'; then
+        echo "ILM policy applied to index successfully."
+    else
+        echo "Failed to apply ILM policy to index. Response: $response"
+    fi
+}
+
 if [ ! -f "$SETUP_COMPLETE_FILE" ]; then
     wait_for_kibana
 
@@ -55,6 +103,9 @@ if [ ! -f "$SETUP_COMPLETE_FILE" ]; then
     else
         echo "Index pattern 'elk-logs-*' already exists."
     fi
+
+    create_ilm_policy
+    apply_ilm_policy_to_index
 
     touch "$SETUP_COMPLETE_FILE"
     echo "Kibana initialization complete."
