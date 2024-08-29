@@ -27,7 +27,7 @@ services:
     networks: ["transcendence"]
     env_file: .env
     volumes:
-      - django-logs:/djangologs/
+      - django-logs:/usr/src/app/log
     depends_on:
       postgres:
         condition: service_healthy

@@ -147,16 +147,19 @@ LOGGING = {
             'format': '{levelname} {message}',
             'style': '{',
         },
+        'json': {
+            '()': 'json_log_formatter.JSONFormatter',
+        },
     },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.FileHandler',
-            'filename': '/django.log',  # Adjust this path as necessary
-            'formatter': 'verbose',
+            'filename': '/usr/src/app/log/django.log',  # Adjust this path as necessary
+            'formatter': 'json',
         },
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'simple',
         },
@@ -164,7 +167,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
