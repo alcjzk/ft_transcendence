@@ -40,17 +40,17 @@ def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
         
     code = request.GET.get('code')
     if not code or not code.isalnum():
-        return HttpResponseRedirect('/?error=1')
+        return HttpResponseRedirect('/?error=2')
 
     state = request.GET.get('state')
     if state is None or not state.isalnum():
-        return HttpResponseRedirect('/?error=1')
+        return HttpResponseRedirect('/?error=3')
 
     # Retrieve & compare state and session state
     stored_state = request.session.get('oauth_state')
 
     if state != stored_state:
-        return HttpResponseRedirect('/?error=1')
+        return HttpResponseRedirect('/?error=4')
     del request.session['oauth_state']
 
     # Exchange access token
@@ -64,17 +64,17 @@ def oauth_callback(request: HttpRequest) -> HttpResponseRedirect:
     response = requests.post(url ="https://api.intra.42.fr/oauth/token", data=data)
 
     if response.status_code != 200:
-        return HttpResponseRedirect('/?error=1')
+        return HttpResponseRedirect('/?error=5')
     access_token = response.json().get('access_token')
 
     if not access_token:
-        return HttpResponseRedirect('/?error=1')
+        return HttpResponseRedirect('/?error=6')
 
     headers = {"Accept": "application/json", "Authorization": f"Bearer {access_token}"}
     response = requests.get(url="https://api.intra.42.fr/v2/me", headers=headers)
 
     if response.status_code != 200:
-        return HttpResponseRedirect('/?error=1')
+        return HttpResponseRedirect('/?error=7')
 
     user_data = response.json()
     request.session['first_name'] = user_data.get('first_name');

@@ -10,7 +10,7 @@ template.innerHTML = `
     </style>
     <div class="terminal">
         <div class="output"></div>
-        <input class="input" type="text" maxlength="25">
+        <input class="input" name="asd" type="text" maxlength="25">
     </div>
 `;
 
