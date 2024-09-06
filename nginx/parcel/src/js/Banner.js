@@ -2,7 +2,7 @@ const template = document.createElement('template');
 template.innerHTML = `
     <div class='terminal'>
         <div class='output'></div>
-        <input type='text' name='asder' class='hidden'/>
+        <input type='text' name='input' class='hidden'/>
     </div>
 `;
 
