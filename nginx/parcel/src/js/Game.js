@@ -8,7 +8,7 @@ import { setPage, localize } from './util.js';
 const template = document.createElement('template');
 template.innerHTML = `
     <canvas id='pong'></canvas>
-    <input type="text" maxLength="1" style="width: 0; overflow: hidden; outline: none; margin: 0; padding: 0; border: 0"/>
+    <input type="text" maxLength="1" name="input" style="width: 0; overflow: hidden; outline: none; margin: 0; padding: 0; border: 0"/>
 `;
 
 class Game extends HTMLElement {
